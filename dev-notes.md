@@ -25,3 +25,6 @@
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
+- [ ] support items
+- [ ] re-do The Sprite
+- [ ] add bone for hat/hair

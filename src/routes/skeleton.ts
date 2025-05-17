@@ -46,9 +46,35 @@ const Skeleton = (anchor : Anchor) => {
   } ;
 } ;
 
+const getAllDescendants = (joint : Joint) : Array<Joint> => {
+  return [joint , ...joint.children.flatMap(getAllDescendants)] ;
+} ;
+
+const getAllJoints = (skeleton : Skeleton) : Array<Joint> => {
+  return skeleton.anchor.children.flatMap(getAllDescendants) ;
+} ;
+
+type Guide = {
+  start : {
+    x : number ;
+    y : number ;
+  } ;
+  end : {
+    x : number ;
+    y : number ;
+  } ;
+  length : number ;
+  rotation : number ;
+  imgWidth : number ;
+  imgHeight : number ;
+} ;
+
 export {
   Joint ,
   type JointProperties ,
   Anchor ,
   Skeleton ,
+  getAllJoints ,
+  getAllDescendants ,
+  type Guide ,
 } ;

@@ -22,14 +22,14 @@ type BoundingBox = {
 
 async function getNonTransparentBoundingBox(imagePath : string) : Promise<BoundingBox | null> {
   const image = sharp(imagePath);
-  const { width, height } = await image.metadata();
+  const { width, height, channels } = await image.metadata();
   const { data } = await image.raw().toBuffer({ resolveWithObject: true });
 
   let minX = width, minY = height, maxX = -1, maxY = -1;
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const i = (y * width + x) * 4; // RGBA
+      const i = (y * width + x) * channels; // RGBA
       const alpha = data[i + 3];
 
       if (alpha !== 0) {

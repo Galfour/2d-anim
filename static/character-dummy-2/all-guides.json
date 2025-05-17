@@ -1,0 +1,198 @@
+{
+  "body": {
+    "start": {
+      "x": 146,
+      "y": 410
+    },
+    "end": {
+      "x": 146,
+      "y": 35
+    },
+    "length": 374,
+    "rotation": 90,
+    "imgWidth": 286,
+    "imgHeight": 532
+  },
+  "head": {
+    "start": {
+      "x": 74,
+      "y": 203
+    },
+    "end": {
+      "x": 90,
+      "y": 18
+    },
+    "length": 185,
+    "rotation": 84,
+    "imgWidth": 160,
+    "imgHeight": 221
+  },
+  "leftarm": {
+    "start": {
+      "x": 44,
+      "y": 19
+    },
+    "end": {
+      "x": 177,
+      "y": 152
+    },
+    "length": 187,
+    "rotation": -44,
+    "imgWidth": 191,
+    "imgHeight": 171
+  },
+  "leftfoot": {
+    "start": {
+      "x": 35,
+      "y": 56
+    },
+    "end": {
+      "x": 164,
+      "y": 79
+    },
+    "length": 131,
+    "rotation": -10,
+    "imgWidth": 198,
+    "imgHeight": 123
+  },
+  "leftforearm": {
+    "start": {
+      "x": 19,
+      "y": 25
+    },
+    "end": {
+      "x": 172,
+      "y": 132
+    },
+    "length": 186,
+    "rotation": -34,
+    "imgWidth": 178,
+    "imgHeight": 143
+  },
+  "leftforeleg": {
+    "start": {
+      "x": 50,
+      "y": 25
+    },
+    "end": {
+      "x": 49,
+      "y": 285
+    },
+    "length": 260,
+    "rotation": -90,
+    "imgWidth": 95,
+    "imgHeight": 292
+  },
+  "lefthand": {
+    "start": {
+      "x": 24,
+      "y": 25
+    },
+    "end": {
+      "x": 92,
+      "y": 57
+    },
+    "length": 76,
+    "rotation": -25,
+    "imgWidth": 123,
+    "imgHeight": 77
+  },
+  "leftleg": {
+    "start": {
+      "x": 31,
+      "y": 4
+    },
+    "end": {
+      "x": 82,
+      "y": 297
+    },
+    "length": 297,
+    "rotation": -80,
+    "imgWidth": 129,
+    "imgHeight": 304
+  },
+  "rightarm": {
+    "start": {
+      "x": 40,
+      "y": 22
+    },
+    "end": {
+      "x": 133,
+      "y": 224
+    },
+    "length": 222,
+    "rotation": -65,
+    "imgWidth": 166,
+    "imgHeight": 236
+  },
+  "rightfoot": {
+    "start": {
+      "x": 25,
+      "y": 55
+    },
+    "end": {
+      "x": 155,
+      "y": 77
+    },
+    "length": 131,
+    "rotation": -9,
+    "imgWidth": 184,
+    "imgHeight": 112
+  },
+  "rightforearm": {
+    "start": {
+      "x": 17,
+      "y": 15
+    },
+    "end": {
+      "x": 170,
+      "y": 122
+    },
+    "length": 186,
+    "rotation": -34,
+    "imgWidth": 177,
+    "imgHeight": 128
+  },
+  "rightforeleg": {
+    "start": {
+      "x": 77,
+      "y": 41
+    },
+    "end": {
+      "x": 30,
+      "y": 297
+    },
+    "length": 260,
+    "rotation": -100,
+    "imgWidth": 106,
+    "imgHeight": 304
+  },
+  "righthand": {
+    "start": {
+      "x": 6,
+      "y": 20
+    },
+    "end": {
+      "x": 75,
+      "y": 48
+    },
+    "length": 74,
+    "rotation": -21,
+    "imgWidth": 105,
+    "imgHeight": 72
+  },
+  "rightleg": {
+    "start": {
+      "x": 50,
+      "y": 18
+    },
+    "end": {
+      "x": 51,
+      "y": 316
+    },
+    "length": 297,
+    "rotation": -89,
+    "imgWidth": 115,
+    "imgHeight": 342
+  }
+}
