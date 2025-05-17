@@ -63,7 +63,7 @@
 <svg width="800" height="800" viewBox="0 0 100 100" fill="red">
 	<rect width="100" height="100" rx="25" fill="gray"/>
 
-  <g transform="translate(50 50)">
+  <g transform="translate(50 50) scale(2)">
     {#each skeleton.anchor.children as joint , index}
       <DebugJointSvg joint={joint} path={[index]}/>
     {/each}

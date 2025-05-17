@@ -1,6 +1,8 @@
 - [X] basic skeleton
 - [X] debug view
+- [X] improve debug view
 - [ ] feet and hands
 - [ ] render with actual sprites
 - [ ] first animation
 - [ ] easy to change size of limbs
+- [ ] decide on ratio for real-life proportions
