@@ -3,6 +3,25 @@
 - [X] improve debug view
 - [X] feet and hands
 - [ ] render with actual sprites
+  - [X] Draw on Photoshop
+  - [X] Decide on format
+    - One layer / png for each limb, named `[limb]`
+    - Each layer has a duplicate layer named `[limb] guide`, with red dot as starting point and blue dot as end point
+  - [X] Export Multiple Layers Photoshop
+  - [X] Post process photoshop export
+    - `.png.png` :(
+    - `_XXXX_` :(
+    - remove dashes
+    - make everything lowercase
+  - [X] Crop the sprites to their bounding boxes
+  - [X] Parse Photoshop
+    - [X] Takes all files.png in folder
+    - [X] Takes their guide
+    - [X] Generate individual JSON of start/end pos, and start + len + absolute rotation
+    - [X] Generate big JSON
+  - [ ] Reconcile .JSON and skeleton
+    - Render the normalised guides on top of the debug
+  - [ ] Render Skeleton with Sprites
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions

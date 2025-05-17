@@ -4,6 +4,7 @@
 
   export let joint : Joint ;
   export let path : Array<number> = [] ;
+  export let showText : boolean = true ;
 
   function hslToHex(h: number, s: number, l: number): string {
     s /= 100;
@@ -47,6 +48,7 @@
 
   // normalize to 25-75
   let lightness = ~~(lightnessNonNormalized * 50 / 40) + 25 ;
+  // let saturation = ~~(saturationNonNormalized * 50 / 40) + 25 ;
 
   const color = hslToHex(hue , 100 , lightness) ;
 
@@ -58,12 +60,15 @@
     x={0} y={-1}
     width={joint.length} height={2} rx={1} fill={color} fill-opacity={0.4}
   />
-  <!-- print name of the joint -->
-  <text x={joint.start.x} y={joint.start.y - 1} font-size={2} fill={"black"}>{joint.name}</text>
+
+  {#if showText}
+    <!-- print name of the joint -->
+    <text x={joint.start.x} y={joint.start.y - 1} font-size={2} fill={"black"}>{joint.name}</text>
+  {/if}
 
   <g transform={`translate(${joint.length} 0)`}>
     {#each joint.children as child , index}
-      <DebugJointSvg joint={child} path={[...path , index]}/>
+      <DebugJointSvg joint={child} path={[...path , index]} {showText}/>
     {/each}
   </g>
 
