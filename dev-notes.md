@@ -1,0 +1,6 @@
+- [X] basic skeleton
+- [X] debug view
+- [ ] feet and hands
+- [ ] render with actual sprites
+- [ ] first animation
+- [ ] easy to change size of limbs
