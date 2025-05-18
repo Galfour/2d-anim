@@ -59,12 +59,7 @@ type Guide = {
     x : number ;
     y : number ;
   } ;
-  end : {
-    x : number ;
-    y : number ;
-  } ;
   length : number ;
-  rotation : number ;
   imgWidth : number ;
   imgHeight : number ;
 } ;

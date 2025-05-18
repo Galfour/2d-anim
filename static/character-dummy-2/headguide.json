@@ -1,14 +1,9 @@
 {
   "start": {
-    "x": 74,
-    "y": 203
-  },
-  "end": {
-    "x": 90,
-    "y": 18
+    "x": 11,
+    "y": 89
   },
   "length": 185,
-  "rotation": 84,
-  "imgWidth": 160,
-  "imgHeight": 221
+  "imgWidth": 218,
+  "imgHeight": 170
 }

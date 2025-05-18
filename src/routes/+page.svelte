@@ -11,28 +11,28 @@
   // Root is at the hips
   const skeleton = Skeleton(Anchor({x : 0 , y : 0} , [
     Joint('body' , { x : 0 , y : 0 } , 10 , -90 , [
-      // Joint('head' , { x : 1 , y : 0 } , 5 , 5) ,
-      // Joint('leftArm' , { x : 0 , y : 3 } , 5 , 135 , [
-      //   Joint('leftForeArm' , { x : 0 , y : 0 } , 5 , -10 , [
-      //     Joint('leftHand' , { x : -.5 , y : 0 } , 2 , -10) ,
-      //   ]) ,
-      // ]) ,
-      // Joint('rightArm' , { x : -1.5 , y : -3 } , 6 , 155 , [
-      //   Joint('rightForeArm' , { x : 0 , y : 0 } , 5 , -30 , [
-      //     Joint('rightHand' , { x : -.5 , y : 0 } , 2 , -15) ,
-      //   ]) ,
-      // ]) ,
+      Joint('head' , { x : 1 , y : 0 } , 5 , 5) ,
+      Joint('leftArm' , { x : 0 , y : 3 } , 5 , 135 , [
+        Joint('leftForeArm' , { x : 0 , y : 0 } , 5 , -10 , [
+          Joint('leftHand' , { x : -.5 , y : 0 } , 2 , -10) ,
+        ]) ,
+      ]) ,
+      Joint('rightArm' , { x : -1.5 , y : -3 } , 6 , 155 , [
+        Joint('rightForeArm' , { x : 0 , y : 0 } , 5 , -30 , [
+          Joint('rightHand' , { x : -.5 , y : 0 } , 2 , -15) ,
+        ]) ,
+      ]) ,
     ]) ,
     Joint('leftLeg' , { x : 2 , y : -1 } , 8 , 80 , [
-      // Joint('leftForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [
-      //   Joint('leftFoot' , { x : 0 , y : 0 } , 3.5 , -80) ,
-      // ]) ,
+      Joint('leftForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [
+        Joint('leftFoot' , { x : 0 , y : 0 } , 3.5 , -80) ,
+      ]) ,
     ]) ,
-    // Joint('rightLeg' , { x : -2 , y : 1 } , 8 , 90 , [
-    //   Joint('rightForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [
-    //     Joint('rightFoot' , { x : 0 , y : 0 } , 3.5 , -90) ,
-    //   ]) ,
-    // ]) ,
+    Joint('rightLeg' , { x : -2 , y : 1 } , 8 , 90 , [
+      Joint('rightForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [
+        Joint('rightFoot' , { x : 0 , y : 0 } , 3.5 , -90) ,
+      ]) ,
+    ]) ,
   ])) ;
 
   const concatRecords = <T>(arr : Array<Record<string , T>>) : Record<string , T> => {
@@ -71,7 +71,7 @@
   const skeletonStores = skeleton.anchor.children.map(editableJointStores) ;
 
   // const allImageUrlsArray = getAllJoints(skeleton).map(x => x.name.toLowerCase()).map(x => [x , `/character-dummy-2/${x}guide.png`]) ;
-  const allImageUrlsArray = getAllJoints(skeleton).map(x => x.name.toLowerCase()).map(x => [x , `/character-dummy-2/${x}guide.png`]) ;
+  const allImageUrlsArray = getAllJoints(skeleton).map(x => x.name.toLowerCase()).map(x => [x , `/character-dummy-2/${x}.png`]) ;
   const allImageUrls : Record<string , string> = Object.fromEntries(allImageUrlsArray) ;
   console.log(allImageUrls) ;
 

@@ -17,7 +17,6 @@ for (const file of files) {
   if (file.endsWith(".png")) {
     let newName = file ;
     newName = newName.replace(/-/g, "") ;
-    newName = newName.replace(/_\d\d\d\d_/g, "") ;
     newName = newName.replace(/.png.png/g, ".png") ;
     newName = newName.toLowerCase() ;
     fs.renameSync(path + "/" + file, path + "/" + newName) ;
