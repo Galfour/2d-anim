@@ -1,4 +1,4 @@
-import { AngleAdd, AngleRadians, AngleSub, AngleToRadians, AngleZero, type Angle } from "../lib/angle" ;
+import { AngleAdd, AngleRadians, AngleSub, AngleToRadians, AngleZero, type Angle } from "./angle" ;
 
 
 export type Position = {
@@ -179,7 +179,6 @@ export const Skeleton = (root : Root , jointConstructors : Array< JoinConstructo
       ...joint , anchor , angle , length ,
     } ;
   }
-  console.log('final' , JSON.stringify(skeleton.joints.head , null , 2)) ;
 
   // check that layerOrder contains exactly all the joint names
   if (layerOrder.length !== Object.keys(skeleton.joints).length) {
@@ -313,7 +312,6 @@ export type SkeletonAnimation = {
 } ;
 
 export const runSkeletonAnimation = (
-  skeleton: Skeleton,
   animation: SkeletonAnimation,
   onRootControl: (updated: RootControl) => void,
   onJointControl: (name: string, updated: JointControl) => void,

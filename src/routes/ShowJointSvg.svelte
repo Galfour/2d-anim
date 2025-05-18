@@ -1,7 +1,7 @@
 <script lang="ts">
     import { AngleToDegrees } from "$lib/angle";
   import ShowJointSvg from "./ShowJointSvg.svelte" ;
-  import { type Joint, type Guide } from "./skeleton" ;
+  import { type Joint, type Guide } from "$lib/skeleton" ;
 
   export let joint : Joint ;
   export let allImageUrls : Record<string , string> ;

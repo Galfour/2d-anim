@@ -1,83 +1,18 @@
 <script lang=ts>
   import { writable, type Writable } from "svelte/store";
 
-  import { type Joint , JointProperties, Skeleton , SkeletonAnimationFrameData, type Guide, SkeletonControl, applySkeletonControlState, Root, JoinConstructor } from "./skeleton" ;
+  import { type Joint , JointProperties, Skeleton , SkeletonAnimationFrameData, type Guide, SkeletonControl, applySkeletonControlState, Root, JoinConstructor, type RootControl, type JointControl, type SkeletonAnimation, runSkeletonAnimation, applyJointControl, applyRootControl } from "$lib/skeleton" ;
   import DebugJointSvg from "./DebugJointSvg.svelte";
   import ShowJointSvg from "./ShowJointSvg.svelte";
   // import ShowJointCss from "./ShowJointCss.svelte" ;
   import guides_ from "./all-guides-2.json" ;
-  import { untrack } from "svelte" ;
 
-  import { AngleDegrees as deg } from "$lib/angle" ;
+  import { AngleToDegrees, AngleDegrees as deg } from "$lib/angle" ;
+    import { onMount } from "svelte";
+    import { getAllAnimationFrames, getAnimationFrame, removeAnimationFrame, saveAnimationFrame } from "./storage";
+    import { lerp, lerpAnimationFrame } from "$lib/lerp";
 
   const allGuides : Record<string , Guide> = guides_ ;
-
-  // const skeletonDefaultPause = SkeletonAnimationFrameData(SkeletonControl(
-  //   { position : { x : 0 , y : 0 } } ,
-  //   {
-  //     leftLeg : JointProperties({ x : 2 , y : -1 } , 8 , 80) ,
-  //     leftForeLeg : JointProperties({ x : 0 , y : 0 } , 7 , 10) ,
-  //     leftFoot : JointProperties({ x : 0 , y : 0 } , 3.5 , -80) ,
-  //     body : JointProperties({ x : 0 , y : 0 } , 10 , -90) ,
-  //     leftArm : JointProperties({ x : 0 , y : 3 } , 5 , 135) ,
-  //     leftForeArm : JointProperties({ x : 0 , y : 0 } , 5 , -10) ,
-  //     leftHand : JointProperties({ x : -.5 , y : 0 } , 2 , -10) ,
-  //     head : JointProperties({ x : 1 , y : 0 } , 5 , 5) ,
-  //     rightArm : JointProperties({ x : -1.5 , y : -3 } , 6 , 155) ,
-  //     rightForeArm : JointProperties({ x : 0 , y : 0 } , 5 , -30) ,
-  //     rightHand : JointProperties({ x : -.5 , y : 0 } , 2 , -15) ,
-  //     rightLeg : JointProperties({ x : -2 , y : 1 } , 8 , 90) ,
-  //     rightForeLeg : JointProperties({ x : 0 , y : 0 } , 7 , 10) ,
-  //     rightFoot : JointProperties({ x : 0 , y : 0 } , 3.5 , -90) ,
-  //   } ,
-  // )) ;
-
-
-  let bodyAngle = $state('0') ;
-  let leftArmAngle = $state('0') ;
-  let rightArmAngle = $state('0') ;
-  let leftLegAngle = $state('0') ;
-  let leftForeLegAngle = $state('0') ;
-
-  $effect(() => {
-    leftArmAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { leftArm : { angle : deg(parseFloat(leftArmAngle)) } } }) ;
-      console.log(leftArmAngle) ;
-    }) ;
-  }) ;
-
-  $effect(() => {
-    bodyAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { body : { angle : deg(parseFloat(bodyAngle)) } } }) ;
-      console.log(bodyAngle) ;
-    }) ;
-  }) ;
-
-  $effect(() => {
-    rightArmAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { rightArm : { angle : deg(parseFloat(rightArmAngle)) } } }) ;
-      console.log(rightArmAngle) ;
-    }) ;
-  }) ;
-
-  $effect(() => {
-    leftLegAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { leftLeg : { angle : deg(parseFloat(leftLegAngle)) } } }) ;
-      console.log(leftLegAngle) ;
-    }) ;
-  }) ;
-
-  $effect(() => {
-    leftForeLegAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { leftForeLeg : { angle : deg(parseFloat(leftForeLegAngle)) } } }) ;
-      console.log(leftForeLegAngle) ;
-    }) ;
-  }) ;
 
   // Root is at the hips
   const skeleton = $state(Skeleton(Root({x : 0 , y : 0}) , [
@@ -134,9 +69,58 @@
   const allImageUrlsArray = Object.keys(skeleton.joints).map(x => [x , `/character-dummy-2/${x.toLowerCase()}.png`] as const) ;
   const allImageUrls : Record<string , string> = Object.fromEntries(allImageUrlsArray) ;
 
+  let allAnimationFrames : Array<string> = $state([]) ;
+
+  const fetchAllAnimationFrames = async () => {
+    allAnimationFrames = await getAllAnimationFrames() ;
+  } ;
+
+  onMount(async () => {
+    await fetchAllAnimationFrames() ;
+  }) ;
+
+  let bufferName : string = $state('') ;
+  let bufferContent : SkeletonAnimationFrameData | undefined = $state(undefined) ;
+
+  let animationStartName : string | undefined = $state(undefined) ;
+  let animationEndName : string | undefined = $state(undefined) ;
+  let animationFrameQuantity : number = $state(120) ;
+  let animationFrameRate : number = $state(60) ;
+
+  // LERP between start and end at frameRate frames per second
+  const generateAnimation = async () : Promise<SkeletonAnimation | undefined> => {
+    if (!animationStartName || !animationEndName) return ;
+    const animationStart = await getAnimationFrame(animationStartName) ;
+    const animationEnd = await getAnimationFrame(animationEndName) ;
+    if (!animationStart || !animationEnd) return ;
+
+    const skeletonAnimation : SkeletonAnimation = {
+      frameData : [] ,
+      frameRate : animationFrameRate ,
+    }
+
+    for (let i = 0; i < animationFrameQuantity; i++) {
+      const t = i / animationFrameQuantity ;
+      const lerped = lerpAnimationFrame(animationStart, animationEnd, t);
+      skeletonAnimation.frameData.push(lerped) ;
+    }
+
+    return skeletonAnimation ;
+  } ;
+
+  const playAnimation = async () => {
+    const animation = await generateAnimation() ;
+    if (!animation) return ;
+    runSkeletonAnimation(animation , (rootControl) => {
+      applyRootControl(skeleton.root , rootControl) ;
+    } , (name , jointControl) => {
+      console.log('jointControl' , name , jointControl) ;
+      applyJointControl(skeleton , name , jointControl) ;
+    }) ;
+  } ;
 </script>
 
-<svg width="600" height="600" viewBox="0 0 100 100" fill="red">
+<svg width="500" height="500" viewBox="0 0 100 100" fill="red">
 	<rect width="100" height="100" rx="25" fill="#bbb"/>
 
   <g transform="translate(50 50) scale(2)">
@@ -147,7 +131,7 @@
   </g>
 </svg>
 
-<svg width="600" height="600" viewBox="0 0 100 100" fill="red">
+<svg width="500" height="500" viewBox="0 0 100 100" fill="red">
 	<rect width="100" height="100" rx="25" fill="#bbb"/>
 
   <g transform="translate(50 50) scale(2)">
@@ -158,51 +142,89 @@
   </g>
 </svg>
 
-<div style="display : flex; flex-direction : row; gap : 20px">
-  <div>
-    <div>Body Angle</div>
-    <input type="range" bind:value={bodyAngle} min="-180" max="180" step="0.1"/>
-  </div>
-  <div>
-    <div>Right Arm Angle</div>
-    <input type="range" bind:value={rightArmAngle} min="-180" max="180" step="0.1"/>
-  </div>
-  <div>
-    <div>Left Arm Angle</div>
-    <input type="range" bind:value={leftArmAngle} min="-180" max="180" step="0.1"/>
-  </div>
-  <div>
-    <div>Left Leg Angle</div>
-    <input type="range" bind:value={leftLegAngle} min="-180" max="180" step="0.1"/>
-  </div>
-  <div>
-    <div>Left Fore Leg Angle</div>
-    <input type="range" bind:value={leftForeLegAngle} min="-180" max="180" step="0.1"/>
-  </div>
+<div style="display : flex; flex-direction : row; gap : 20px ; flex-wrap : wrap">
+  {#each Object.entries(skeleton.joints) as [jointName , joint]}
+    <div>
+      <div>{joint.name}</div>
+      <input type="range" bind:value={
+        () => AngleToDegrees(joint.angle) , 
+        (x) => applySkeletonControlState(skeleton , { joints : { [jointName] : { angle : deg(x) } } })
+      } min="-180" max="180" step="0.1"/>
+    </div>
+  {/each}
 </div>
 
-<!-- 
-<div style="width : 600px; height : 600px; position : relative; background-color : #bbb">
-  <div style="position : absolute; top : 0; left : 0; width : 100px; height : 100px; background-color : #bbb; border-radius : 25px;"></div>
-
-  <div style:transform="translate(50 50) scale(2)">
-    {#each skeleton.anchor.children as joint , index}
-      <ShowJointCss joint={joint} path={[index]} {allImageUrls} {allGuides} pixelsPerUnit={2}/>
+<div style="display : flex; flex-direction : column; gap : 10px ; flex-wrap : wrap ; width : max-content">
+  <h2>Animation Frames</h2>
+  <div style="display : flex; flex-direction : row; gap : 10px ; flex-wrap : wrap ; width : max-content">
+    {#each allAnimationFrames as frameName}
+      <div style="border : 1px solid gray ; padding : 10px ; border-radius : 5px ; width : max-content">
+        <div>{frameName}</div>
+        <button onclick={async () => {
+          const frame = await getAnimationFrame(frameName) ;
+          if (frame) {
+            applySkeletonControlState(skeleton , frame.control) ;
+          }
+        }}>Load</button>  
+        <button onclick={async () => {
+          await removeAnimationFrame(frameName) ;
+          await fetchAllAnimationFrames() ;
+        }}>Remove</button>
+      </div>
     {/each}
   </div>
-</div> -->
-
-<!-- 
-<div style="display : flex; flex-direction : column; gap : 20px">
-  <div style="display : flex; flex-direction : row; gap : 20px">
-    <div>Left Fore Leg</div>
-    <div>
-      <div>Angle</div>
-      <input type="range" bind:value={leftForeLeg.angle} min="-90" max="90" step="0.1"/>
-      <div>{leftForeLeg.angle}</div>
-    </div>
-
-
+  <br>
+  <button onclick={() => {
+    const rootControl : RootControl = {} ;
+    const jointControls : Record<string , JointControl> = {} ;
+    for (const [name , joint] of Object.entries(skeleton.joints)) {
+      jointControls[name] = { angle : joint.angle } ;
+    }
+    bufferContent = SkeletonAnimationFrameData(SkeletonControl(rootControl , jointControls)) ;
+  }}>Keyframe current angles into buffer</button>
+  <div style="display : none">
+    <div style="width : 800px ; overflow-y : auto ; max-height : 8lh ; min-height : 1lh ; border : 1px solid gray ; padding : 10px ; border-radius : 5px ;">{JSON.stringify(bufferContent , null , 2)}</div>
   </div>
+  <div>{bufferContent ? 'There is a buffer' : 'No buffer'}</div>
+  <input type="text" bind:value={bufferName}/>
+  <button disabled={!bufferContent || !bufferName} onclick={async () => {
+    if (!bufferContent || !bufferName) return ;
+    await saveAnimationFrame(bufferName , bufferContent) ;
+    await fetchAllAnimationFrames() ;
+  }}>Save</button>
+</div>
 
-</div> -->
+<div>
+  <h2>Animation</h2>
+  <div style="display : flex; flex-direction : row; gap : 10px ; flex-wrap : wrap ; width : max-content">
+    <div>
+      <div>Start Frame</div>
+      <select bind:value={animationStartName}>
+        {#each allAnimationFrames as frameName}
+          <option value={frameName}>{frameName}</option>
+        {/each}
+      </select>
+    </div>
+    <div>
+      <div>End Frame</div>
+      <select bind:value={animationEndName}>
+        {#each allAnimationFrames as frameName}
+          <option value={frameName}>{frameName}</option>
+        {/each}
+      </select>
+    </div>
+    <div style="width : 100px">
+      <div>Frame Rate</div>
+      <select bind:value={animationFrameRate}>
+        {#each [12 , 25 , 30 , 60 , 120 , 240] as rate}
+          <option value={rate}>{rate}</option>
+        {/each}
+      </select>
+    </div>
+    <div>
+      <div>Frame Quantity</div>
+      <input type="number" bind:value={animationFrameQuantity} style="width : 50px"/>
+    </div>
+  </div>
+  <button onclick={playAnimation} disabled={!animationStartName || !animationEndName}>Play</button>
+</div>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AngleToDegrees } from "$lib/angle";
-  import { PositionAdd, type Joint, fromPolar } from "./skeleton" ;
+  import { PositionAdd, type Joint, fromPolar } from "$lib/skeleton" ;
 
   let { joint , rankRatio , showText = true } : { joint : Joint , rankRatio : number , showText : boolean } = $props() ;
 

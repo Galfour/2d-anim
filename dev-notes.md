@@ -39,9 +39,7 @@
 - [X] Re Animate
 - [X] Local Space
 - [X] Angle Data type
-- [ ] Split Static and Dynamic properties
-  - [ ] All frame-data should dynamic, and not lose the default pause
-- [ ] not only local transforms, but global transforms too
+- [X] Save and load animation frames
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
@@ -49,10 +47,14 @@
 - [ ] re-do The Sprite
 - [ ] add bone for hat/hair
 
+- [ ] Split Static and Dynamic properties
+  - [ ] All frame-data should dynamic, and not lose the default pause
+- [ ] not only local transforms, but global transforms too
 - [ ] assert never in case default
 - [ ] LERP for animation frames if janky
 - [ ] denormalise rotations and deal with it at render time
 - [ ] CSS renderer
+- [ ] Tests
 
 # Guides
 
