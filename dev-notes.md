@@ -31,7 +31,6 @@
   - [X] rotate -> ok
   - [X] guides -> ~ok
     - can't do better for rotation normalisation, given size of images
-- [ ] CSS renderer
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
@@ -39,6 +38,7 @@
 - [ ] re-do The Sprite
 - [ ] add bone for hat/hair
 - [ ] denormalise rotations and deal with it at render time
+- [ ] CSS renderer
 
 # Guides
 

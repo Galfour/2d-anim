@@ -4,6 +4,7 @@
   import { Joint , Anchor , Skeleton , type JointProperties, getAllJoints, type Guide } from "./skeleton" ;
   import DebugJointSvg from "./DebugJointSvg.svelte";
   import ShowJointSvg from "./ShowJointSvg.svelte";
+  import ShowJointCss from "./ShowJointCss.svelte";
   import guides_ from "./all-guides-2.json" ;
 
   const allGuides : Record<string , Guide> = guides_ ;
@@ -33,7 +34,7 @@
       Joint('rightForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [] , [
         Joint('rightFoot' , { x : 0 , y : 0 } , 3.5 , -90) ,
       ]) ,
-    ]),
+    ]) ,
   ])) ;
 
   const concatRecords = <T>(arr : Array<Record<string , T>>) : Record<string , T> => {
@@ -97,6 +98,17 @@
     {/each}
   </g>
 </svg>
+
+
+<!-- <div style="width : 600px; height : 600px; position : relative; background-color : #bbb">
+  <div style="position : absolute; top : 0; left : 0; width : 100px; height : 100px; background-color : #bbb; border-radius : 25px;"></div>
+
+  <div style:transform="translate(50 50) scale(2)">
+    {#each skeleton.anchor.children as joint , index}
+      <ShowJointCss joint={joint} path={[index]} {allImageUrls} {allGuides} pixelsPerUnit={2}/>
+    {/each}
+  </div>
+</div> -->
 
 <!-- 
 <div style="display : flex; flex-direction : column; gap : 20px">
