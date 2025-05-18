@@ -26,7 +26,7 @@
 
   // console.log('joint' , joint.name , $state.snapshot(joint)) ;
 
-  const target = PositionAdd(joint.anchor , fromPolar(joint.length , joint.angle)) ;
+  const target = $derived(PositionAdd(joint.anchor , fromPolar(joint.length , joint.angle))) ;
 </script>
 
 <circle cx={joint.anchor.x} cy={joint.anchor.y} r={.25} fill={"red"} fill-opacity={0.8} />

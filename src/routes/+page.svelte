@@ -39,45 +39,45 @@
   let leftLegAngle = $state('0') ;
   let leftForeLegAngle = $state('0') ;
 
-  // $effect(() => {
-  //   leftArmAngle ;
-  //   untrack(() => {
-  //     applySkeletonControlState(skeleton , { joints : { leftArm : { angle : parseFloat(leftArmAngle) } } }) ;
-  //     console.log(leftArmAngle) ;
-  //   }) ;
-  // }) ;
+  $effect(() => {
+    leftArmAngle ;
+    untrack(() => {
+      applySkeletonControlState(skeleton , { joints : { leftArm : { angle : deg(parseFloat(leftArmAngle)) } } }) ;
+      console.log(leftArmAngle) ;
+    }) ;
+  }) ;
 
-  // $effect(() => {
-  //   bodyAngle ;
-  //   untrack(() => {
-  //     applySkeletonControlState(skeleton , { joints : { body : { angle : parseFloat(bodyAngle) } } }) ;
-  //     console.log(bodyAngle) ;
-  //   }) ;
-  // }) ;
+  $effect(() => {
+    bodyAngle ;
+    untrack(() => {
+      applySkeletonControlState(skeleton , { joints : { body : { angle : deg(parseFloat(bodyAngle)) } } }) ;
+      console.log(bodyAngle) ;
+    }) ;
+  }) ;
 
-  // $effect(() => {
-  //   rightArmAngle ;
-  //   untrack(() => {
-  //     applySkeletonControlState(skeleton , { joints : { rightArm : { angle : parseFloat(rightArmAngle) } } }) ;
-  //     console.log(rightArmAngle) ;
-  //   }) ;
-  // }) ;
+  $effect(() => {
+    rightArmAngle ;
+    untrack(() => {
+      applySkeletonControlState(skeleton , { joints : { rightArm : { angle : deg(parseFloat(rightArmAngle)) } } }) ;
+      console.log(rightArmAngle) ;
+    }) ;
+  }) ;
 
-  // $effect(() => {
-  //   leftLegAngle ;
-  //   untrack(() => {
-  //     applySkeletonControlState(skeleton , { joints : { leftLeg : { angle : parseFloat(leftLegAngle) } } }) ;
-  //     console.log(leftLegAngle) ;
-  //   }) ;
-  // }) ;
+  $effect(() => {
+    leftLegAngle ;
+    untrack(() => {
+      applySkeletonControlState(skeleton , { joints : { leftLeg : { angle : deg(parseFloat(leftLegAngle)) } } }) ;
+      console.log(leftLegAngle) ;
+    }) ;
+  }) ;
 
-  // $effect(() => {
-  //   leftForeLegAngle ;
-  //   untrack(() => {
-  //     applySkeletonControlState(skeleton , { joints : { leftForeLeg : { angle : parseFloat(leftForeLegAngle) } } }) ;
-  //     console.log(leftForeLegAngle) ;
-  //   }) ;
-  // }) ;
+  $effect(() => {
+    leftForeLegAngle ;
+    untrack(() => {
+      applySkeletonControlState(skeleton , { joints : { leftForeLeg : { angle : deg(parseFloat(leftForeLegAngle)) } } }) ;
+      console.log(leftForeLegAngle) ;
+    }) ;
+  }) ;
 
   // Root is at the hips
   const skeleton = $state(Skeleton(Root({x : 0 , y : 0}) , [
