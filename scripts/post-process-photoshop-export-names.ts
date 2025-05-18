@@ -18,6 +18,7 @@ for (const file of files) {
     let newName = file ;
     newName = newName.replace(/-/g, "") ;
     newName = newName.replace(/.png.png/g, ".png") ;
+    newName = newName.replace(/_\d+_/g, " ") ;
     newName = newName.toLowerCase() ;
     fs.renameSync(path + "/" + file, path + "/" + newName) ;
     console.log(`Renamed ${file} to ${newName}`) ;

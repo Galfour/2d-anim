@@ -3,7 +3,7 @@
 - [X] debug view
 - [X] improve debug view
 - [X] feet and hands
-- [ ] render with actual sprites
+- [X] render with actual sprites
   - [X] Draw on Photoshop
   - [X] Decide on format
     - One layer / png for each limb, named `[limb]`
@@ -25,13 +25,20 @@
   - [X] Order
   - [X] Write down instructions
   - [X] Debug
-- [ ] Check precisions
+- [X] Check precisions and edge conditions
+  - [X] names -> ok
+  - [X] bounding-box -> ok
+  - [X] rotate -> ok
+  - [X] guides -> ~ok
+    - can't do better for rotation normalisation, given size of images
+- [ ] CSS renderer
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
 - [ ] support items
 - [ ] re-do The Sprite
 - [ ] add bone for hat/hair
+- [ ] denormalise rotations and deal with it at render time
 
 # Guides
 

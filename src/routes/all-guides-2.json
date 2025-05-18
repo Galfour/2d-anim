@@ -1,127 +1,127 @@
 {
   "body": {
     "start": {
-      "x": 120,
-      "y": 146
+      "x": 120.71,
+      "y": 146.64
     },
-    "length": 374,
+    "length": 374.36,
     "imgWidth": 532,
     "imgHeight": 286
   },
   "head": {
     "start": {
-      "x": 11,
-      "y": 89
+      "x": 11.96,
+      "y": 89.5
     },
-    "length": 185,
+    "length": 185.84,
     "imgWidth": 218,
     "imgHeight": 170
   },
   "leftarm": {
     "start": {
-      "x": 34,
-      "y": 53
+      "x": 34.78,
+      "y": 53.21
     },
-    "length": 187,
+    "length": 187.9,
     "imgWidth": 234,
     "imgHeight": 112
   },
   "leftfoot": {
     "start": {
-      "x": 44,
-      "y": 56
+      "x": 44.77,
+      "y": 56.55
     },
-    "length": 131,
+    "length": 131.11,
     "imgWidth": 215,
     "imgHeight": 105
   },
   "leftforearm": {
     "start": {
-      "x": 23,
-      "y": 33
+      "x": 23.44,
+      "y": 33.44
     },
-    "length": 186,
+    "length": 186.83,
     "imgWidth": 217,
     "imgHeight": 71
   },
   "leftforeleg": {
     "start": {
-      "x": 25,
-      "y": 43
+      "x": 25.5,
+      "y": 43.9
     },
-    "length": 260,
+    "length": 260.35,
     "imgWidth": 292,
     "imgHeight": 95
   },
   "lefthand": {
     "start": {
-      "x": 28,
-      "y": 35
+      "x": 28.6,
+      "y": 35.62
     },
-    "length": 76,
+    "length": 76.25,
     "imgWidth": 134,
     "imgHeight": 73
   },
   "leftleg": {
     "start": {
-      "x": 5,
-      "y": 60
+      "x": 5.18,
+      "y": 60.79
     },
-    "length": 297,
+    "length": 297.22,
     "imgWidth": 312,
     "imgHeight": 117
   },
   "rightarm": {
     "start": {
-      "x": 25,
-      "y": 45
+      "x": 25.9,
+      "y": 45.99
     },
-    "length": 222,
+    "length": 222.09,
     "imgWidth": 265,
     "imgHeight": 105
   },
   "rightfoot": {
     "start": {
-      "x": 27,
-      "y": 57
+      "x": 27.88,
+      "y": 57.14
     },
-    "length": 132,
+    "length": 132.07,
     "imgWidth": 192,
     "imgHeight": 102
   },
   "rightforearm": {
     "start": {
-      "x": 17,
-      "y": 41
+      "x": 17.11,
+      "y": 41.54
     },
-    "length": 186,
+    "length": 186.53,
     "imgWidth": 210,
     "imgHeight": 79
   },
   "rightforeleg": {
     "start": {
-      "x": 43,
-      "y": 49
+      "x": 43.2,
+      "y": 49.47
     },
-    "length": 260,
+    "length": 260.87,
     "imgWidth": 310,
     "imgHeight": 113
   },
   "righthand": {
     "start": {
-      "x": 9,
-      "y": 31
+      "x": 9.8,
+      "y": 31.21
     },
-    "length": 73,
+    "length": 73.94,
     "imgWidth": 114,
     "imgHeight": 59
   },
   "rightleg": {
     "start": {
-      "x": 18,
-      "y": 62
+      "x": 18.31,
+      "y": 62.85
     },
-    "length": 297,
+    "length": 297.98,
     "imgWidth": 343,
     "imgHeight": 117
   }

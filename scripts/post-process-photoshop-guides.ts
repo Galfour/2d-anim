@@ -69,19 +69,19 @@ const main = async () => {
       console.log(summary) ;
       continue ;
     }
-    const length = ~~(Math.sqrt((start.x - end.x) ** 2 + (start.y - end.y) ** 2)) ;
-    const rotation = ~~(Math.atan2(-(end.y - start.y), end.x - start.x) * 180 / Math.PI) ; // the sign is reversed because the y-axis is inverted
-    if (Math.abs(rotation) > 0.01) {
+    const length = Math.sqrt((start.x - end.x) ** 2 + (start.y - end.y) ** 2) ;
+    const rotation = Math.atan2(-(end.y - start.y), end.x - start.x) ; // the sign is reversed because the y-axis is inverted
+    if (Math.abs(rotation) > 0.02) {
       console.log(`Unacceptable rotation ${rotation} for ${file}`) ;
       continue ;
     }
     const metadata = await guideImg.metadata() ;
     const guide : Guide = {
       start : {
-        x : ~~start.x,
-        y : ~~start.y
+        x : parseFloat(start.x.toFixed(2)),
+        y : parseFloat(start.y.toFixed(2))
       },
-      length : length,
+      length : parseFloat(length.toFixed(2)),
       imgWidth : metadata.width,
       imgHeight : metadata.height
     } ;
