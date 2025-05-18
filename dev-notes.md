@@ -36,7 +36,9 @@
   - SVG and CSS stacking context layering make it impossible to have right leg appear before right arm but after body
   - must deal with hierarchy in JS
 - [X] Make right leg appear before right arm
-- [ ] Re Animate
+- [X] Re Animate
+- [X] Local Space
+- [X] Angle Data type
 - [ ] Split Static and Dynamic properties
   - [ ] All frame-data should dynamic, and not lose the default pause
 - [ ] not only local transforms, but global transforms too
