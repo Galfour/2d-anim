@@ -11,16 +11,18 @@ type JointProperties = {
 
 type Joint = JointProperties & {
   name : string ,
-  children : Array<Joint> ,
+  preChildren : Array<Joint> ,
+  postChildren : Array<Joint> ,
 } ;
 
-const Joint = (name : string , start : Position , length : number , angle : number , children : Array<Joint> = []) => {
+const Joint = (name : string , start : Position , length : number , angle : number , preChildren : Array<Joint> = [] , postChildren : Array<Joint> = []) => {
   return {
     name ,
     start ,
     length ,
     angle ,
-    children ,
+    preChildren ,
+    postChildren ,
   } ;
 } ;
 
@@ -47,7 +49,7 @@ const Skeleton = (anchor : Anchor) => {
 } ;
 
 const getAllDescendants = (joint : Joint) : Array<Joint> => {
-  return [joint , ...joint.children.flatMap(getAllDescendants)] ;
+  return [joint , ...joint.preChildren.flatMap(getAllDescendants) , ...joint.postChildren.flatMap(getAllDescendants)] ;
 } ;
 
 const getAllJoints = (skeleton : Skeleton) : Array<Joint> => {

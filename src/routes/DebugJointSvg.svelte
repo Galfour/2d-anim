@@ -55,6 +55,14 @@
 </script>
 
 <g transform={`translate(${joint.start.x} ${joint.start.y}) rotate(${joint.angle} 0 0)`}>
+
+  <g transform={`translate(${joint.length} 0)`}>
+    {#each joint.preChildren as child , index}
+      <DebugJointSvg joint={child} path={[...path , index]} {showText}/>
+    {/each}
+  </g>
+
+
   <!-- print joint as rounded rectangle with color -->
   <rect
     x={0} y={-1}
@@ -66,14 +74,16 @@
     <text x={joint.start.x} y={joint.start.y - 1} font-size={2} fill={"black"}>{joint.name}</text>
   {/if}
 
+  <!-- debug circle at end of the joint -->
+  <circle cx={joint.length} cy={0} r={.5} fill={color} fill-opacity={0.6} />
+
   <g transform={`translate(${joint.length} 0)`}>
-    {#each joint.children as child , index}
-      <DebugJointSvg joint={child} path={[...path , index]} {showText}/>
+    {#each joint.postChildren as child , index}
+      <DebugJointSvg joint={child} path={[...path , joint.preChildren.length + index]} {showText}/>
     {/each}
   </g>
 
-  <!-- debug circle at end of the joint -->
-  <circle cx={joint.length} cy={0} r={.5} fill={color} fill-opacity={0.6} />
+
 </g>
 
 <!-- debug circle at beginning of the joint -->

@@ -22,8 +22,10 @@
     - [X] Generate big JSON
   - [X] Reconcile .JSON and skeleton
   - [X] Render Skeleton with Sprites
-  - [] Order
-  - [] Make a script
+  - [X] Order
+  - [X] Write down instructions
+  - [X] Debug
+- [ ] Check precisions
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
@@ -44,3 +46,4 @@
   2. run `npx tsx post-process-guide-rotate folder`
   3. run `npx tsx post-process-guide-bounding-boxes folder`
   4. run `npx tsx post-process-photoshop-guides folder`
+  5. Use the `all-guides.json`

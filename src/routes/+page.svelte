@@ -10,29 +10,30 @@
 
   // Root is at the hips
   const skeleton = Skeleton(Anchor({x : 0 , y : 0} , [
+    Joint('leftLeg' , { x : 2 , y : -1 } , 8 , 80 , [] , [
+      Joint('leftForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [] , [
+        Joint('leftFoot' , { x : 0 , y : 0 } , 3.5 , -80) ,
+      ]) ,
+    ]) ,
     Joint('body' , { x : 0 , y : 0 } , 10 , -90 , [
-      Joint('head' , { x : 1 , y : 0 } , 5 , 5) ,
-      Joint('leftArm' , { x : 0 , y : 3 } , 5 , 135 , [
-        Joint('leftForeArm' , { x : 0 , y : 0 } , 5 , -10 , [
+      Joint('leftArm' , { x : 0 , y : 3 } , 5 , 135 , [] , [
+        Joint('leftForeArm' , { x : 0 , y : 0 } , 5 , -10 , [] , [
           Joint('leftHand' , { x : -.5 , y : 0 } , 2 , -10) ,
         ]) ,
       ]) ,
-      Joint('rightArm' , { x : -1.5 , y : -3 } , 6 , 155 , [
-        Joint('rightForeArm' , { x : 0 , y : 0 } , 5 , -30 , [
+    ] , [
+      Joint('head' , { x : 1 , y : 0 } , 5 , 5) ,
+      Joint('rightArm' , { x : -1.5 , y : -3 } , 6 , 155 , [] , [
+        Joint('rightForeArm' , { x : 0 , y : 0 } , 5 , -30 , [] , [
           Joint('rightHand' , { x : -.5 , y : 0 } , 2 , -15) ,
         ]) ,
       ]) ,
     ]) ,
-    Joint('leftLeg' , { x : 2 , y : -1 } , 8 , 80 , [
-      Joint('leftForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [
-        Joint('leftFoot' , { x : 0 , y : 0 } , 3.5 , -80) ,
-      ]) ,
-    ]) ,
-    Joint('rightLeg' , { x : -2 , y : 1 } , 8 , 90 , [
-      Joint('rightForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [
+    Joint('rightLeg' , { x : -2 , y : 1 } , 8 , 90 , [] , [
+      Joint('rightForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [] , [
         Joint('rightFoot' , { x : 0 , y : 0 } , 3.5 , -90) ,
       ]) ,
-    ]) ,
+    ]),
   ])) ;
 
   const concatRecords = <T>(arr : Array<Record<string , T>>) : Record<string , T> => {
@@ -59,7 +60,7 @@
     }) ;
 
 
-    const childrenStores = x.children.map(editableJointStores) ;
+    const childrenStores = [...x.preChildren.map(editableJointStores) , ...x.postChildren.map(editableJointStores)] ;
     const storeMap : Record<string , Writable<JointProperties>> = {
       [x.name] : selfStore ,
       ...concatRecords(childrenStores) ,
@@ -90,7 +91,7 @@
 <svg width="600" height="600" viewBox="0 0 100 100" fill="red">
 	<rect width="100" height="100" rx="25" fill="#bbb"/>
 
-  <g transform="translate(50 50)">
+  <g transform="translate(50 50) scale(2)">
     {#each skeleton.anchor.children as joint , index}
       <ShowJointSvg joint={joint} path={[index]} {allImageUrls} {allGuides}/>
     {/each}
