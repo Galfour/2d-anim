@@ -31,12 +31,17 @@
   - [X] rotate -> ok
   - [X] guides -> ~ok
     - can't do better for rotation normalisation, given size of images
+- [X] first animation controller
+- [ ] Split Static and Dynamic properties
+  - [ ] All frame-data should dynamic, and not lose the default pause
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
 - [ ] support items
 - [ ] re-do The Sprite
 - [ ] add bone for hat/hair
+
+- [ ] LERP for animation frames if janky
 - [ ] denormalise rotations and deal with it at render time
 - [ ] CSS renderer
 
