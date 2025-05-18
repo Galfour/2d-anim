@@ -4,7 +4,7 @@
   import { Joint , Anchor , JointProperties, Skeleton , SkeletonAnimationFrameData, getAllJoints, type Guide, SkeletonControl, applySkeletonControlState } from "./skeleton" ;
   import DebugJointSvg from "./DebugJointSvg.svelte";
   import ShowJointSvg from "./ShowJointSvg.svelte";
-  // import ShowJointCss from "./ShowJointCss.svelte";
+  // import ShowJointCss from "./ShowJointCss.svelte" ;
   import guides_ from "./all-guides-2.json" ;
   import { untrack } from "svelte" ;
 
@@ -192,8 +192,8 @@
   </div>
 </div>
 
-
-<!-- <div style="width : 600px; height : 600px; position : relative; background-color : #bbb">
+<!-- 
+<div style="width : 600px; height : 600px; position : relative; background-color : #bbb">
   <div style="position : absolute; top : 0; left : 0; width : 100px; height : 100px; background-color : #bbb; border-radius : 25px;"></div>
 
   <div style:transform="translate(50 50) scale(2)">

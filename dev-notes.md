@@ -32,6 +32,10 @@
   - [X] guides -> ~ok
     - can't do better for rotation normalisation, given size of images
 - [X] first animation controller
+- [ ] cry, and move everything hierarchy to js
+  - SVG and CSS stacking context layering make it impossible to have right leg appear before right arm but after body
+  - must deal with hierarchy in JS
+- [ ] make right leg appear before right arm
 - [ ] Split Static and Dynamic properties
   - [ ] All frame-data should dynamic, and not lose the default pause
 - [ ] first animation
