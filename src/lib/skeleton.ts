@@ -341,7 +341,8 @@ export const runSkeletonAnimation = (
       return;
     }
 
-    const frameIndex = Math.floor(elapsed / frameDuration) ;
+    let frameIndex = Math.floor(elapsed / frameDuration) ;
+    if (frameIndex < 0) frameIndex = 0 ;
     applyFrameData(frameIndex) ;
 
     requestAnimationFrame(tick);

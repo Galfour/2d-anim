@@ -8,7 +8,7 @@
   import guides_ from "./all-guides-2.json" ;
 
   import { AngleToDegrees, AngleDegrees as deg } from "$lib/angle" ;
-    import { onMount } from "svelte";
+    import { onMount, untrack } from "svelte";
     import { getAllAnimationFrames, getAnimationFrame, removeAnimationFrame, saveAnimationFrame } from "./storage";
     import { lerp, lerpAnimationFrame } from "$lib/lerp";
 
@@ -87,6 +87,18 @@
   let animationFrameQuantity : number = $state(120) ;
   let animationFrameRate : number = $state(60) ;
 
+  let animation : SkeletonAnimation | undefined = $state(undefined) ;
+  $effect(() => {
+    animationStartName ;
+    animationEndName ;
+    animationFrameQuantity ;
+    animationFrameRate ;
+    untrack(async () => {
+      if (!animationStartName || !animationEndName) return ;
+      animation = await generateAnimation() ;
+    })
+  })
+
   // LERP between start and end at frameRate frames per second
   const generateAnimation = async () : Promise<SkeletonAnimation | undefined> => {
     if (!animationStartName || !animationEndName) return ;
@@ -109,12 +121,11 @@
   } ;
 
   const playAnimation = async () => {
-    const animation = await generateAnimation() ;
     if (!animation) return ;
     runSkeletonAnimation(animation , (rootControl) => {
       applyRootControl(skeleton.root , rootControl) ;
     } , (name , jointControl) => {
-      console.log('jointControl' , name , jointControl) ;
+      // console.log('jointControl' , name , jointControl) ;
       applyJointControl(skeleton , name , jointControl) ;
     }) ;
   } ;

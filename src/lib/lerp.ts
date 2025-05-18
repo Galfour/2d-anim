@@ -58,9 +58,9 @@ export const lerpAnimationFrame = (a : SkeletonAnimationFrameData , b : Skeleton
     }
 
     for (const keyA in a.control.joints) {
-      a.control.joints[keyA] = {} ;
+      result.control.joints[keyA] = {} ;
       const jointA = a.control.joints[keyA] ;
-      const jointB = a.control.joints[keyA] ;
+      const jointB = b.control.joints[keyA] ;
       if (!jointB) throw new Error("Joint keys are not the same") ;
       if (!!jointA.anchor !== !!jointB.anchor) {
         throw new Error("Joint anchor presence is not the same") ;

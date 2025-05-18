@@ -40,7 +40,7 @@
 - [X] Local Space
 - [X] Angle Data type
 - [X] Save and load animation frames
-- [ ] first animation
+- [X] first procedural animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
 - [ ] support items
