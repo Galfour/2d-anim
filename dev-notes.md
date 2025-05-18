@@ -32,12 +32,14 @@
   - [X] guides -> ~ok
     - can't do better for rotation normalisation, given size of images
 - [X] first animation controller
-- [ ] cry, and move everything hierarchy to js
+- [X] cry, and move everything hierarchy to js
   - SVG and CSS stacking context layering make it impossible to have right leg appear before right arm but after body
   - must deal with hierarchy in JS
-- [ ] make right leg appear before right arm
+- [ ] Make right leg appear before right arm
+- [ ] Re Animate
 - [ ] Split Static and Dynamic properties
   - [ ] All frame-data should dynamic, and not lose the default pause
+- [ ] not only local transforms, but global transforms too
 - [ ] first animation
 - [ ] easy to change size of limbs
 - [ ] decide on ratio for real-life proportions
@@ -45,6 +47,7 @@
 - [ ] re-do The Sprite
 - [ ] add bone for hat/hair
 
+- [ ] assert never in case default
 - [ ] LERP for animation frames if janky
 - [ ] denormalise rotations and deal with it at render time
 - [ ] CSS renderer

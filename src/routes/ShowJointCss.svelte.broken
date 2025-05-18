@@ -1,7 +1,7 @@
-<!-- Currently Broken -->
+Currently Broken
 
 <script lang="ts">
-  import ShowJointCss from "./ShowJointCss.svelte" ;
+  import ShowJ./ShowJointCss.svelte.brokenointCss.svelte" ;
   import { Joint, type Guide } from "./skeleton" ;
 
   export let joint : Joint ;

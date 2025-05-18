@@ -37,7 +37,7 @@ async function getPixelSummary(sharpImage : sharp.Sharp) : Promise<Record<string
 const files = fs.readdirSync(path) ;
 
 type Guide = {
-  start : {
+  anchor : {
     x : number ;
     y : number ;
   } ;
@@ -77,7 +77,7 @@ const main = async () => {
     }
     const metadata = await guideImg.metadata() ;
     const guide : Guide = {
-      start : {
+      anchor : {
         x : parseFloat(start.x.toFixed(2)),
         y : parseFloat(start.y.toFixed(2))
       },

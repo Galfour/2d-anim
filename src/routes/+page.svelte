@@ -1,37 +1,36 @@
 <script lang=ts>
   import { writable, type Writable } from "svelte/store";
 
-  import { Joint , Anchor , JointProperties, Skeleton , SkeletonAnimationFrameData, getAllJoints, type Guide, SkeletonControl, applySkeletonControlState } from "./skeleton" ;
+  import { type Joint , JointProperties, Skeleton , SkeletonAnimationFrameData, type Guide, SkeletonControl, applySkeletonControlState, Root, JoinConstructor } from "./skeleton" ;
   import DebugJointSvg from "./DebugJointSvg.svelte";
   import ShowJointSvg from "./ShowJointSvg.svelte";
   // import ShowJointCss from "./ShowJointCss.svelte" ;
   import guides_ from "./all-guides-2.json" ;
   import { untrack } from "svelte" ;
 
+  import { AngleDegrees as deg } from "$lib/angle" ;
+
   const allGuides : Record<string , Guide> = guides_ ;
 
-  const skeletonDefaultPause = SkeletonAnimationFrameData(SkeletonControl(
-    Anchor({
-      x : 0 ,
-      y : 0 ,
-    }) ,
-    {
-      leftLeg : JointProperties({ x : 2 , y : -1 } , 8 , 80) ,
-      leftForeLeg : JointProperties({ x : 0 , y : 0 } , 7 , 10) ,
-      leftFoot : JointProperties({ x : 0 , y : 0 } , 3.5 , -80) ,
-      body : JointProperties({ x : 0 , y : 0 } , 10 , -90) ,
-      leftArm : JointProperties({ x : 0 , y : 3 } , 5 , 135) ,
-      leftForeArm : JointProperties({ x : 0 , y : 0 } , 5 , -10) ,
-      leftHand : JointProperties({ x : -.5 , y : 0 } , 2 , -10) ,
-      head : JointProperties({ x : 1 , y : 0 } , 5 , 5) ,
-      rightArm : JointProperties({ x : -1.5 , y : -3 } , 6 , 155) ,
-      rightForeArm : JointProperties({ x : 0 , y : 0 } , 5 , -30) ,
-      rightHand : JointProperties({ x : -.5 , y : 0 } , 2 , -15) ,
-      rightLeg : JointProperties({ x : -2 , y : 1 } , 8 , 90) ,
-      rightForeLeg : JointProperties({ x : 0 , y : 0 } , 7 , 10) ,
-      rightFoot : JointProperties({ x : 0 , y : 0 } , 3.5 , -90) ,
-    } ,
-  )) ;
+  // const skeletonDefaultPause = SkeletonAnimationFrameData(SkeletonControl(
+  //   { position : { x : 0 , y : 0 } } ,
+  //   {
+  //     leftLeg : JointProperties({ x : 2 , y : -1 } , 8 , 80) ,
+  //     leftForeLeg : JointProperties({ x : 0 , y : 0 } , 7 , 10) ,
+  //     leftFoot : JointProperties({ x : 0 , y : 0 } , 3.5 , -80) ,
+  //     body : JointProperties({ x : 0 , y : 0 } , 10 , -90) ,
+  //     leftArm : JointProperties({ x : 0 , y : 3 } , 5 , 135) ,
+  //     leftForeArm : JointProperties({ x : 0 , y : 0 } , 5 , -10) ,
+  //     leftHand : JointProperties({ x : -.5 , y : 0 } , 2 , -10) ,
+  //     head : JointProperties({ x : 1 , y : 0 } , 5 , 5) ,
+  //     rightArm : JointProperties({ x : -1.5 , y : -3 } , 6 , 155) ,
+  //     rightForeArm : JointProperties({ x : 0 , y : 0 } , 5 , -30) ,
+  //     rightHand : JointProperties({ x : -.5 , y : 0 } , 2 , -15) ,
+  //     rightLeg : JointProperties({ x : -2 , y : 1 } , 8 , 90) ,
+  //     rightForeLeg : JointProperties({ x : 0 , y : 0 } , 7 , 10) ,
+  //     rightFoot : JointProperties({ x : 0 , y : 0 } , 3.5 , -90) ,
+  //   } ,
+  // )) ;
 
 
   let bodyAngle = $state('0') ;
@@ -40,111 +39,93 @@
   let leftLegAngle = $state('0') ;
   let leftForeLegAngle = $state('0') ;
 
-  $effect(() => {
-    leftArmAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { leftArm : { angle : parseFloat(leftArmAngle) } } }) ;
-      console.log(leftArmAngle) ;
-    }) ;
-  }) ;
+  // $effect(() => {
+  //   leftArmAngle ;
+  //   untrack(() => {
+  //     applySkeletonControlState(skeleton , { joints : { leftArm : { angle : parseFloat(leftArmAngle) } } }) ;
+  //     console.log(leftArmAngle) ;
+  //   }) ;
+  // }) ;
 
-  $effect(() => {
-    bodyAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { body : { angle : parseFloat(bodyAngle) } } }) ;
-      console.log(bodyAngle) ;
-    }) ;
-  }) ;
+  // $effect(() => {
+  //   bodyAngle ;
+  //   untrack(() => {
+  //     applySkeletonControlState(skeleton , { joints : { body : { angle : parseFloat(bodyAngle) } } }) ;
+  //     console.log(bodyAngle) ;
+  //   }) ;
+  // }) ;
 
-  $effect(() => {
-    rightArmAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { rightArm : { angle : parseFloat(rightArmAngle) } } }) ;
-      console.log(rightArmAngle) ;
-    }) ;
-  }) ;
+  // $effect(() => {
+  //   rightArmAngle ;
+  //   untrack(() => {
+  //     applySkeletonControlState(skeleton , { joints : { rightArm : { angle : parseFloat(rightArmAngle) } } }) ;
+  //     console.log(rightArmAngle) ;
+  //   }) ;
+  // }) ;
 
-  $effect(() => {
-    leftLegAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { leftLeg : { angle : parseFloat(leftLegAngle) } } }) ;
-      console.log(leftLegAngle) ;
-    }) ;
-  }) ;
+  // $effect(() => {
+  //   leftLegAngle ;
+  //   untrack(() => {
+  //     applySkeletonControlState(skeleton , { joints : { leftLeg : { angle : parseFloat(leftLegAngle) } } }) ;
+  //     console.log(leftLegAngle) ;
+  //   }) ;
+  // }) ;
 
-  $effect(() => {
-    leftForeLegAngle ;
-    untrack(() => {
-      applySkeletonControlState(skeleton , { joints : { leftForeLeg : { angle : parseFloat(leftForeLegAngle) } } }) ;
-      console.log(leftForeLegAngle) ;
-    }) ;
-  }) ;
+  // $effect(() => {
+  //   leftForeLegAngle ;
+  //   untrack(() => {
+  //     applySkeletonControlState(skeleton , { joints : { leftForeLeg : { angle : parseFloat(leftForeLegAngle) } } }) ;
+  //     console.log(leftForeLegAngle) ;
+  //   }) ;
+  // }) ;
 
   // Root is at the hips
-  const skeleton = $state(Skeleton(Anchor({x : 0 , y : 0} , [
-    Joint('leftLeg' , { x : 2 , y : -1 } , 8 , 80 , [] , [
-      Joint('leftForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [] , [
-        Joint('leftFoot' , { x : 0 , y : 0 } , 3.5 , -80) ,
+  const skeleton = $state(Skeleton(Root({x : 0 , y : 0}) , [
+    JoinConstructor('leftLeg' , { x : 2 , y : -1 } , 8 , deg(80) , [
+      JoinConstructor('leftForeLeg' , { x : 0 , y : 0 } , 7 , deg(10) , [
+        JoinConstructor('leftFoot' , { x : 0 , y : 0 } , 3.5 , deg(-80)) ,
       ]) ,
     ]) ,
-    Joint('body' , { x : 0 , y : 0 } , 10 , -90 , [
-      Joint('leftArm' , { x : 0 , y : 3 } , 5 , 135 , [] , [
-        Joint('leftForeArm' , { x : 0 , y : 0 } , 5 , -10 , [] , [
-          Joint('leftHand' , { x : -.5 , y : 0 } , 2 , -10) ,
+    JoinConstructor('body' , { x : 0 , y : 0 } , 10 , deg(-90) , [
+      JoinConstructor('leftArm' , { x : 0 , y : 3 } , 5 , deg(135) , [
+        JoinConstructor('leftForeArm' , { x : 0 , y : 0 } , 5 , deg(-10) , [
+          JoinConstructor('leftHand' , { x : -.5 , y : 0 } , 2 , deg(-10)) ,
         ]) ,
       ]) ,
-    ] , [
-      Joint('head' , { x : 1 , y : 0 } , 5 , 5) ,
-      Joint('rightArm' , { x : -1.5 , y : -3 } , 6 , 155 , [] , [
-        Joint('rightForeArm' , { x : 0 , y : 0 } , 5 , -30 , [] , [
-          Joint('rightHand' , { x : -.5 , y : 0 } , 2 , -15) ,
+      JoinConstructor('head' , { x : 1 , y : 0 } , 5 , deg(5)) ,
+      JoinConstructor('rightArm' , { x : -1.5 , y : -3 } , 6 , deg(155) , [
+        JoinConstructor('rightForeArm' , { x : 0 , y : 0 } , 5 , deg(-30) , [
+          JoinConstructor('rightHand' , { x : -.5 , y : 0 } , 2 , deg(-15)) ,
         ]) ,
       ]) ,
     ]) ,
-    Joint('rightLeg' , { x : -2 , y : 1 } , 8 , 90 , [] , [
-      Joint('rightForeLeg' , { x : 0 , y : 0 } , 7 , 10 , [] , [
-        Joint('rightFoot' , { x : 0 , y : 0 } , 3.5 , -90) ,
+    JoinConstructor('rightLeg' , { x : -2 , y : 1 } , 8 , deg(90) , [
+      JoinConstructor('rightForeLeg' , { x : 0 , y : 0 } , 7 , deg(10) , [
+        JoinConstructor('rightFoot' , { x : 0 , y : 0 } , 3.5 , deg(-90)) ,
       ]) ,
     ]) ,
-  ]))) ;
-
-  const concatRecords = <T>(arr : Array<Record<string , T>>) : Record<string , T> => {
-    const result : Record<string , T> = {} ;
-    for (const map of arr) {
-      for (const [key , value] of Object.entries(map)) {
-        result[key] = value ;
-      }
-    }
-    return result ;
-  } ;
+  ])) ;
 
   // this leaks memory by auto-subscribing
-  const editableJointStores = (x : Joint) : Record<string , Writable<JointProperties>> => {
-    const selfStore = writable<JointProperties>({
-      start : x.start ,
-      angle : x.angle ,
-      length : x.length ,
-    }) ;
-    selfStore.subscribe((newState) => {
-      x.angle = newState.angle ;
-      x.length = newState.length ;
-      x.start = newState.start ;
-    }) ;
+  const editableJointStores = (x : Skeleton) : Record<string , Writable<JointProperties>> => {
+    const storeMap : Record<string , Writable<JointProperties>> = {} ;
 
-
-    const childrenStores = [...x.preChildren.map(editableJointStores) , ...x.postChildren.map(editableJointStores)] ;
-    const storeMap : Record<string , Writable<JointProperties>> = {
-      [x.name] : selfStore ,
-      ...concatRecords(childrenStores) ,
-    } ;
+    for (const [name , joint] of Object.entries(x.joints)) {
+      const store = writable<JointProperties>(joint) ;
+      store.subscribe((newState) => {
+        applySkeletonControlState(x , { joints : { [name] : newState } }) ;
+      }) ;
+      storeMap[name] = store ;
+    }
 
     return storeMap ;
   } ;
 
-  const skeletonStores = skeleton.anchor.children.map(editableJointStores) ;
+  const skeletonStores = {
+    joints : editableJointStores(skeleton) ,
+  } ;
 
-  // const allImageUrlsArray = getAllJoints(skeleton).map(x => x.name.toLowerCase()).map(x => [x , `/character-dummy-2/${x}guide.png`]) ;
-  const allImageUrlsArray = getAllJoints(skeleton).map(x => x.name.toLowerCase()).map(x => [x , `/character-dummy-2/${x}.png`]) ;
+  const allImageUrlsArray = Object.keys(skeleton.joints).map(x => [x , `/character-dummy-2/${x.toLowerCase()}.png`] as const) ;
   const allImageUrls : Record<string , string> = Object.fromEntries(allImageUrlsArray) ;
 
 </script>
@@ -153,8 +134,9 @@
 	<rect width="100" height="100" rx="25" fill="#bbb"/>
 
   <g transform="translate(50 50) scale(2)">
-    {#each skeleton.anchor.children as joint , index}
-      <DebugJointSvg joint={joint} path={[index]} showText={false}/>
+    {#each Object.values(skeleton.joints) as joint , index}
+      {@const rankRatio = index / Object.keys(skeleton.joints).length}
+      <DebugJointSvg {joint} {rankRatio} showText={false}/>
     {/each}
   </g>
 </svg>
@@ -163,8 +145,8 @@
 	<rect width="100" height="100" rx="25" fill="#bbb"/>
 
   <g transform="translate(50 50) scale(2)">
-    {#each skeleton.anchor.children as joint , index}
-      <ShowJointSvg joint={joint} path={[index]} {allImageUrls} {allGuides}/>
+    {#each Object.values(skeleton.joints) as joint}
+      <ShowJointSvg {joint} {allImageUrls} {allGuides}/>
     {/each}
   </g>
 </svg>

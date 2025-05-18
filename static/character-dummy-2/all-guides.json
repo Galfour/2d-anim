@@ -1,6 +1,6 @@
 {
   "body": {
-    "start": {
+    "anchor": {
       "x": 120.71,
       "y": 146.64
     },
@@ -9,7 +9,7 @@
     "imgHeight": 286
   },
   "head": {
-    "start": {
+    "anchor": {
       "x": 11.96,
       "y": 89.5
     },
@@ -18,7 +18,7 @@
     "imgHeight": 170
   },
   "leftarm": {
-    "start": {
+    "anchor": {
       "x": 34.78,
       "y": 53.21
     },
@@ -27,7 +27,7 @@
     "imgHeight": 112
   },
   "leftfoot": {
-    "start": {
+    "anchor": {
       "x": 44.77,
       "y": 56.55
     },
@@ -36,7 +36,7 @@
     "imgHeight": 105
   },
   "leftforearm": {
-    "start": {
+    "anchor": {
       "x": 23.44,
       "y": 33.44
     },
@@ -45,7 +45,7 @@
     "imgHeight": 71
   },
   "leftforeleg": {
-    "start": {
+    "anchor": {
       "x": 25.5,
       "y": 43.9
     },
@@ -54,7 +54,7 @@
     "imgHeight": 95
   },
   "lefthand": {
-    "start": {
+    "anchor": {
       "x": 28.6,
       "y": 35.62
     },
@@ -63,7 +63,7 @@
     "imgHeight": 73
   },
   "leftleg": {
-    "start": {
+    "anchor": {
       "x": 5.18,
       "y": 60.79
     },
@@ -72,7 +72,7 @@
     "imgHeight": 117
   },
   "rightarm": {
-    "start": {
+    "anchor": {
       "x": 25.9,
       "y": 45.99
     },
@@ -81,7 +81,7 @@
     "imgHeight": 105
   },
   "rightfoot": {
-    "start": {
+    "anchor": {
       "x": 27.88,
       "y": 57.14
     },
@@ -90,7 +90,7 @@
     "imgHeight": 102
   },
   "rightforearm": {
-    "start": {
+    "anchor": {
       "x": 17.11,
       "y": 41.54
     },
@@ -99,7 +99,7 @@
     "imgHeight": 79
   },
   "rightforeleg": {
-    "start": {
+    "anchor": {
       "x": 43.2,
       "y": 49.47
     },
@@ -108,7 +108,7 @@
     "imgHeight": 113
   },
   "righthand": {
-    "start": {
+    "anchor": {
       "x": 9.8,
       "y": 31.21
     },
@@ -117,7 +117,7 @@
     "imgHeight": 59
   },
   "rightleg": {
-    "start": {
+    "anchor": {
       "x": 18.31,
       "y": 62.85
     },

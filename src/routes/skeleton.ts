@@ -1,151 +1,285 @@
-type Position = {
+import { AngleAdd, AngleRadians, AngleSub, AngleToRadians, AngleZero, type Angle } from "../lib/angle" ;
+
+
+export type Position = {
   x : number ,
   y : number ,
 } ;
 
+export type Space = {
+  origin : Position ,
+  angle : Angle ,
+}
+
+export const PositionAdd = (a : Position , b : Position) : Position => {
+  return {
+    x : a.x + b.x ,
+    y : a.y + b.y ,
+  } ;
+} ;
+
+export const PositionSub = (a : Position , b : Position) : Position => {
+  return {
+    x : a.x - b.x ,
+    y : a.y - b.y ,
+  } ;
+} ;
+
+export const PositionRotate = (a : Position , origin : Position , theta : Angle) : Position => {
+  const dx = a.x - origin.x;
+  const dy = a.y - origin.y;
+  const cosTheta = Math.cos(AngleToRadians(theta));
+  const sinTheta = Math.sin(AngleToRadians(theta));
+  const rx = dx * cosTheta - dy * sinTheta;
+  const ry = dx * sinTheta + dy * cosTheta;
+  return {
+    x: rx + origin.x,
+    y: ry + origin.y,
+  };
+} ;
+
+export const fromPolar = (r : number , theta : Angle) : Position => {
+  return {
+    x : r * Math.cos(AngleToRadians(theta)) ,
+    y : r * Math.sin(AngleToRadians(theta)) ,
+  } ;
+} ;
+
 export type JointProperties = {
-  start : Position ,
-  angle : number ,
+  anchor : Position ,
+  angle : Angle ,
   length : number ,
 }
 
-export const JointProperties = (start : Position , length : number , angle : number) => {
+export const JointProperties = (anchor : Position , length : number , angle : Angle) => {
   return {
-    start ,
+    anchor ,
     length ,
     angle ,
   } ;
 } ;
 
-type Joint = JointProperties & {
+export type JoinConstructor = JointProperties & {
   name : string ,
-  preChildren : Array<Joint> ,
-  postChildren : Array<Joint> ,
+  children : Array<JoinConstructor> ,
 } ;
 
-const Joint = (name : string , start : Position , length : number , angle : number , preChildren : Array<Joint> = [] , postChildren : Array<Joint> = []) => {
+export const JoinConstructor = (name : string , anchor : Position , length : number , angle : Angle , children : Array<JoinConstructor> = []) : JoinConstructor => {
   return {
     name ,
-    start ,
+    anchor ,
     length ,
     angle ,
-    preChildren ,
-    postChildren ,
-  } ;
-} ;
-
-type AnchorProperties = {
-  position : Position ,
-} ;
-
-type Anchor = AnchorProperties & {
-  children : Array<Joint> ,
-} ;
-
-const Anchor = (position : Position , children : Array<Joint> = []) => {
-  return {
-    position ,
     children ,
   } ;
 } ;
 
-type Skeleton = {
-  anchor : Anchor ,
+export type Joint = JointProperties & {
+  name : string ,
+  children : Array<string> ,
+  parent? : string ,
 } ;
 
-const Skeleton = (anchor : Anchor) => {
+export type RootProperties = {
+  position : Position ,
+} ;
+
+export type Root = RootProperties & {
+} ;
+
+export const Root = (position : Position) => {
   return {
-    anchor ,
+    position ,
   } ;
 } ;
 
-const getAllDescendants = (joint : Joint) : Array<Joint> => {
-  return [joint , ...joint.preChildren.flatMap(getAllDescendants) , ...joint.postChildren.flatMap(getAllDescendants)] ;
+export type Skeleton = {
+  root : Root ,
+  joints : Record<string , Joint> ,
 } ;
 
-const getAllJoints = (skeleton : Skeleton) : Array<Joint> => {
-  return skeleton.anchor.children.flatMap(getAllDescendants) ;
+export const getAllDescendants = (skeleton : Skeleton , jointName : string) : Array<string> => {
+  const joint = skeleton.joints[jointName] ;
+  if (joint === undefined) {
+    throw new Error(`Joint ${jointName} not found`) ;
+  }
+  return [...joint.children , ...joint.children.flatMap(child => getAllDescendants(skeleton , child))] ;
+}
+
+
+export const Skeleton = (root : Root , jointConstructors : Array< JoinConstructor>) : Skeleton => {
+  let jointConstructorStack : Array<{ jointConstructor : JoinConstructor , parent? : string }> = jointConstructors.map(jointConstructor => ({ jointConstructor , parent : undefined })) ;
+  const jointConstructorsArray : Array<{ jointConstructor : JoinConstructor , parent? : string }> = [] ;
+  while (jointConstructorStack.length > 0) {
+    const { jointConstructor , parent } = jointConstructorStack.shift()! ;
+    jointConstructorsArray.push({ jointConstructor , parent }) ;
+    jointConstructorStack = [...jointConstructorStack , ...jointConstructor.children.map(child => ({ jointConstructor : child , parent : jointConstructor.name }))] ;
+  }
+
+  const joints : Record<string , Joint> = {} ;
+  for (const { jointConstructor , parent } of jointConstructorsArray) {
+    const name = jointConstructor.name ;
+    if (joints[name] !== undefined) {
+      throw new Error(`Duplicate joint name ${name}`) ;
+    } ;
+    if (parent !== undefined) {
+      if (joints[parent] === undefined) {
+        throw new Error(`Parent joint ${parent} not found`) ;
+      }
+      if (joints[parent].children.includes(name)) {
+        throw new Error(`Child joint ${name} already exists`) ;
+      }
+      joints[parent].children.push(name) ;
+    }
+    joints[name] = {
+      name ,
+      children : [] ,
+      parent ,
+      anchor : { x : 0 , y : 0 } ,
+      length : 0 ,
+      angle : AngleZero() ,
+    } ;
+    jointConstructorStack = [...jointConstructorStack , ...jointConstructor.children.map(child => ({ jointConstructor : child , parent : name }))] ;
+  }
+  const skeleton = {
+    root ,
+    joints ,
+  } ;
+  for (const jointName in skeleton.joints) {
+    const constructor = jointConstructorsArray.find(jointConstructor => jointConstructor.jointConstructor.name === jointName)!.jointConstructor ;
+    const joint = skeleton.joints[jointName]! ;
+    const parent = joint.parent ;
+    let space : Space ;
+    if (parent === undefined) {
+      space = { origin : root.position , angle : AngleZero() } ;
+    } else {
+      const parentJoint = skeleton.joints[parent]! ;
+      space = {
+        angle : parentJoint.angle ,
+        origin : PositionAdd(
+          parentJoint.anchor ,
+          fromPolar(parentJoint.length , parentJoint.angle) ,
+        ) ,
+      } ;
+    }
+    if (jointName === 'head') {
+      console.log('head' ,
+        space.origin , space.angle , constructor.anchor ,
+        PositionRotate(constructor.anchor , { x : 0 , y : 0 } , space.angle) ,
+      ) ;
+    }
+    const anchor = PositionAdd(
+      space.origin ,
+      PositionRotate(constructor.anchor , { x : 0 , y : 0 } , space.angle) ,
+    ) ;
+    const angle = AngleAdd(space.angle , constructor.angle) ;
+    const length = constructor.length ;
+    skeleton.joints[jointName] = {
+      ...joint , anchor , angle , length ,
+    } ;
+  }
+  console.log('final' , JSON.stringify(skeleton.joints.head , null , 2)) ;
+  return skeleton ;
 } ;
 
-type JointControl = Partial<JointProperties> ;
-const applyJointControl = (joint : Joint , control : JointControl) => {
+export type Transform =
+| { type : 'translate' , delta : Position }
+| { type : 'rotate' , origin : Position , delta : Angle }
+
+export const applySingleJointTransform = (skeleton : Skeleton , jointName : string , transform : Transform) : void => {
+  const joint = skeleton.joints[jointName] ;
+  if (joint === undefined) {
+    throw new Error(`Joint ${jointName} not found`) ;
+  }
+  switch (transform.type) {
+    case 'translate':
+      joint.anchor = PositionAdd(joint.anchor , transform.delta) ;
+      break ;
+    case 'rotate':
+      const start = joint.anchor ;
+      const target = PositionAdd(start , fromPolar(joint.length , joint.angle)) ;
+      const newStart = PositionRotate(start , transform.origin , transform.delta) ;
+      const newTarget = PositionRotate(target , transform.origin , transform.delta) ;
+      const delta = PositionSub(newTarget , newStart) ;
+      joint.anchor = newStart ;
+      joint.angle = AngleRadians(Math.atan2(delta.y , delta.x)) ;
+      break ;
+    default:
+      throw new Error(`Unknown transform type ${transform}`) ;
+  }
+}
+
+export type JointControl = Partial<JointProperties> ;
+export const applyJointControl = (skeleton : Skeleton , jointName : string , control : JointControl) : void => {
+  const joint = skeleton.joints[jointName] ;
+  if (joint === undefined) {
+    throw new Error(`Joint ${jointName} not found`) ;
+  }
+  const { anchor , angle , length } = control ;
+  if (anchor !== undefined) {
+    const delta = PositionSub(anchor , joint.anchor) ;
+    joint.anchor = anchor ;
+    for (const child of getAllDescendants(skeleton , jointName)) {
+      applySingleJointTransform(skeleton , child , { type : 'translate' , delta }) ;
+    }
+  }
+  if (length !== undefined) {
+    const previousTarget = PositionAdd(joint.anchor , fromPolar(joint.length , joint.angle)) ;
+    const newTarget = PositionAdd(joint.anchor , fromPolar(length , joint.angle)) ;
+    const delta = PositionSub(newTarget , previousTarget) ;
+    joint.length = length ;
+    for (const child of getAllDescendants(skeleton , jointName)) {
+      applySingleJointTransform(skeleton , child , { type : 'translate' , delta }) ;
+    }
+  }
+  if (angle !== undefined) {
+    const delta = AngleSub(angle , joint.angle) ;
+    joint.angle = angle ;
+    for (const child of getAllDescendants(skeleton , jointName)) {
+      applySingleJointTransform(skeleton , child , { type : 'rotate' , origin : joint.anchor , delta }) ;
+    }
+  }
+} ;
+
+
+export type RootControl = Partial<RootProperties> ;
+export const applyRootControl = (root : Root , control : RootControl) => {
   return {
-    ...joint ,
+    ...root ,
     ...control ,
   } ;
 } ;
-export const applyJointControlState = (joint : Joint , control : JointControl) : void => {
-  const { start , angle , length } = control ;
-  if (start !== undefined) joint.start = start ;
-  if (angle !== undefined) joint.angle = angle ;
-  if (length !== undefined) joint.length = length ;
-} ;
-
-type AnchorControl = Partial<AnchorProperties> ;
-const applyAnchorControl = (anchor : Anchor , control : AnchorControl) => {
-  return {
-    ...anchor ,
-    ...control ,
-  } ;
-} ;
-export const applyAnchorControlState = (anchor : Anchor , control : AnchorControl) : void => {
+export const applyRootControlState = (skeleton : Skeleton , control : RootControl) : void => {
+  const root = skeleton.root ;
   const { position } = control ;
-  if (position !== undefined) anchor.position = position ;
+  if (position !== undefined) {
+    const delta = PositionSub(position , root.position) ;
+    root.position = position ;
+    for (const jointName in skeleton.joints) {
+      applySingleJointTransform(skeleton , jointName , { type : 'translate' , delta }) ;
+    }
+  } ;
 } ;
 
 export type SkeletonControl = {
-  anchor? : AnchorControl ,
+  root? : RootControl ,
   joints? : Record<string , JointControl> ,
 } ;
 
-export const SkeletonControl = (anchor : AnchorControl , joints : Record<string , JointControl> ): SkeletonControl => {
+export const SkeletonControl = (root : RootControl , joints : Record<string , JointControl> ): SkeletonControl => {
   return {
-    anchor ,
+    root ,
     joints ,
   } ;
 } ;
 
 export const applySkeletonControlState = (skeleton : Skeleton , control : SkeletonControl) : void => {
-  if (control.anchor !== undefined) applyAnchorControlState(skeleton.anchor , control.anchor) ;
+  if (control.root !== undefined) applyRootControlState(skeleton , control.root) ;
   if (control.joints !== undefined) {
-    const map = SkeletonMap(skeleton) ;
     for (const [name , jointControl] of Object.entries(control.joints)) {
-      applyJointControlState(map.joints[name] , jointControl) ;
+      applyJointControl(skeleton , name , jointControl) ;
     }
   }
-} ;
-
-type SkeletonMap = {
-  anchor : Anchor ,
-  joints : Record<string , Joint> ,
-} ;
-
-const concatRecords = <T>(arr : Array<Record<string , T>>) : Record<string , T> => {
-  const result : Record<string , T> = {} ;
-  for (const map of arr) {
-    for (const [key , value] of Object.entries(map)) {
-      if (result[key]) {
-        throw new Error(`Duplicate key ${key}`) ;
-      }
-      result[key] = value ;
-    }
-  }
-  return result ;
-} ;
-
-const SkeletonJointsMap = (joint : Joint) : SkeletonMap['joints'] => {
-  const map : SkeletonMap['joints'] = {} ;
-  map[joint.name] = joint ;
-  const preMaps = joint.preChildren.map(SkeletonJointsMap) ;
-  const postMaps = joint.postChildren.map(SkeletonJointsMap) ;
-  return concatRecords([map , ...preMaps , ...postMaps]) ;
-} ;
-
-const SkeletonMap = (skeleton : Skeleton) : SkeletonMap => {
-  return {
-    anchor : skeleton.anchor ,
-    joints : concatRecords(skeleton.anchor.children.map(SkeletonJointsMap)) ,
-  } ;
 } ;
 
 export type SkeletonAnimationFrameData = {
@@ -166,7 +300,7 @@ export type SkeletonAnimation = {
 export const runSkeletonAnimation = (
   skeleton: Skeleton,
   animation: SkeletonAnimation,
-  onAnchorControl: (updated: AnchorControl) => void,
+  onRootControl: (updated: RootControl) => void,
   onJointControl: (name: string, updated: JointControl) => void,
 ) => {
   const { frameData, frameRate } = animation ;
@@ -177,9 +311,8 @@ export const runSkeletonAnimation = (
 
   const applyFrameData = (frameIndex : number) => {
     const frameData = animation.frameData[frameIndex] ;
-    if (frameData.control.anchor !== undefined) onAnchorControl(frameData.control.anchor) ;
+    if (frameData.control.root !== undefined) onRootControl(frameData.control.root) ;
     if (frameData.control.joints !== undefined) {
-      const map = SkeletonMap(skeleton) ;
       for (const [name , jointControl] of Object.entries(frameData.control.joints)) {
         onJointControl(name , jointControl) ;
       }
@@ -206,26 +339,9 @@ export const runSkeletonAnimation = (
 
 
 
-type Guide = {
-  start : {
-    x : number ;
-    y : number ;
-  } ;
-  length : number ;
-  imgWidth : number ;
-  imgHeight : number ;
-} ;
-
-export {
-  Joint ,
-  Anchor ,
-  Skeleton ,
-  getAllJoints ,
-  getAllDescendants ,
-  type Guide ,
-  type JointControl ,
-  applyJointControl ,
-  type AnchorControl ,
-  applyAnchorControl ,
-  SkeletonMap ,
+export type Guide = {
+  anchor : Position ,
+  length : number ,
+  imgWidth : number ,
+  imgHeight : number ,
 } ;
