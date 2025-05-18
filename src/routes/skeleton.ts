@@ -96,6 +96,7 @@ export const Root = (position : Position) => {
 export type Skeleton = {
   root : Root ,
   joints : Record<string , Joint> ,
+  layerOrder : Array<string> ,
 } ;
 
 export const getAllDescendants = (skeleton : Skeleton , jointName : string) : Array<string> => {
@@ -107,7 +108,7 @@ export const getAllDescendants = (skeleton : Skeleton , jointName : string) : Ar
 }
 
 
-export const Skeleton = (root : Root , jointConstructors : Array< JoinConstructor>) : Skeleton => {
+export const Skeleton = (root : Root , jointConstructors : Array< JoinConstructor> , layerOrder : Array<string>) : Skeleton => {
   let jointConstructorStack : Array<{ jointConstructor : JoinConstructor , parent? : string }> = jointConstructors.map(jointConstructor => ({ jointConstructor , parent : undefined })) ;
   const jointConstructorsArray : Array<{ jointConstructor : JoinConstructor , parent? : string }> = [] ;
   while (jointConstructorStack.length > 0) {
@@ -179,7 +180,21 @@ export const Skeleton = (root : Root , jointConstructors : Array< JoinConstructo
     } ;
   }
   console.log('final' , JSON.stringify(skeleton.joints.head , null , 2)) ;
-  return skeleton ;
+
+  // check that layerOrder contains exactly all the joint names
+  if (layerOrder.length !== Object.keys(skeleton.joints).length) {
+    throw new Error(`layerOrder length ${layerOrder.length} does not match number of joints ${Object.keys(skeleton.joints).length}`) ;
+  }
+  for (const jointName of Object.keys(skeleton.joints)) {
+    if (!layerOrder.includes(jointName)) {
+      throw new Error(`Joint ${jointName} not found in layerOrder`) ;
+    }
+  }
+
+  return {
+    ...skeleton ,
+    layerOrder ,
+  } ;
 } ;
 
 export type Transform =

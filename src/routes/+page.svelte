@@ -104,6 +104,12 @@
         JoinConstructor('rightFoot' , { x : 0 , y : 0 } , 3.5 , deg(-90)) ,
       ]) ,
     ]) ,
+  ] , [
+    'leftArm' , 'leftForeArm' , 'leftHand' ,
+    'leftForeLeg' , 'leftLeg' , 'leftFoot' ,
+    'body' , 'head' ,
+    'rightForeLeg' , 'rightLeg' , 'rightFoot' ,
+    'rightArm' , 'rightForeArm' , 'rightHand' ,
   ])) ;
 
   // this leaks memory by auto-subscribing
@@ -145,7 +151,8 @@
 	<rect width="100" height="100" rx="25" fill="#bbb"/>
 
   <g transform="translate(50 50) scale(2)">
-    {#each Object.values(skeleton.joints) as joint}
+    {#each skeleton.layerOrder as jointName}
+      {@const joint = skeleton.joints[jointName]}
       <ShowJointSvg {joint} {allImageUrls} {allGuides}/>
     {/each}
   </g>
