@@ -41,10 +41,11 @@
 - [X] Angle Data type
 - [X] Save and load animation frames
 - [X] first procedural animation
-- [ ] easy to change size of limbs
-- [ ] decide on ratio for real-life proportions
+- [ ] support colours
 - [ ] support items
+- [ ] decide on ratio for real-life proportions
 - [ ] re-do The Sprite
+- [ ] easy to change size of limbs
 - [ ] add bone for hat/hair
 
 - [ ] Split Static and Dynamic properties
