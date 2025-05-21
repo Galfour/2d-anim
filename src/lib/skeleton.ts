@@ -257,13 +257,7 @@ export const applyJointControl = (skeleton : Skeleton , jointName : string , con
 
 
 export type RootControl = Partial<RootProperties> ;
-export const applyRootControl = (root : Root , control : RootControl) => {
-  return {
-    ...root ,
-    ...control ,
-  } ;
-} ;
-export const applyRootControlState = (skeleton : Skeleton , control : RootControl) : void => {
+export const applyRootControl = (skeleton : Skeleton , control : RootControl) : void => {
   const root = skeleton.root ;
   const { position } = control ;
   if (position !== undefined) {
@@ -287,8 +281,8 @@ export const SkeletonControl = (root : RootControl , joints : Record<string , Jo
   } ;
 } ;
 
-export const applySkeletonControlState = (skeleton : Skeleton , control : SkeletonControl) : void => {
-  if (control.root !== undefined) applyRootControlState(skeleton , control.root) ;
+export const applySkeletonControl = (skeleton : Skeleton , control : SkeletonControl) : void => {
+  if (control.root !== undefined) applyRootControl(skeleton , control.root) ;
   if (control.joints !== undefined) {
     for (const [name , jointControl] of Object.entries(control.joints)) {
       applyJointControl(skeleton , name , jointControl) ;

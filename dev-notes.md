@@ -41,13 +41,24 @@
 - [X] Angle Data type
 - [X] Save and load animation frames
 - [X] first procedural animation
+- [ ] non-trivial animation
+  - [X] root editor
+  - [X] save root in poses
+  - [X] debug
+  - [X] angle procedural animation by shortest angle
+  - multiple frames
+  - curves
+- [] save animation
 - [ ] support colours
 - [ ] support items
-- [ ] decide on ratio for real-life proportions
-- [ ] re-do The Sprite
+- [ ] re-do base skeleton
+  - [ ] decide on ratio for real-life proportions
+  - [ ] re-do The Sprite
+  - [ ] do base .psd file
+- [ ] play animation on command
+
 - [ ] easy to change size of limbs
 - [ ] add bone for hat/hair
-
 - [ ] Split Static and Dynamic properties
   - [ ] All frame-data should dynamic, and not lose the default pause
 - [ ] not only local transforms, but global transforms too

@@ -22,9 +22,19 @@ export const AngleAdd = (a : Angle , b : Angle) : Angle => {
   return { type : 'degrees' , value : AngleToDegrees(a) + AngleToDegrees(b) } ;
 } ;
 
-export const AngleSub = (a : Angle , b : Angle) : Angle => {
+export const AngleSub = (a : Angle , b : Angle) : Angle & { type : 'degrees' } => {
   return { type : 'degrees' , value : AngleToDegrees(a) - AngleToDegrees(b) } ;
 } ;
+
+export const AngleSubShortest = (a : Angle , b : Angle) : Angle => {
+  const diff = AngleSub(a , b) ;
+  const rawAngle = ((diff.value % 360) + 360) % 360 ;
+  if (rawAngle < 180) {
+    return { type : 'degrees' , value : rawAngle } ;
+  } else {
+    return { type : 'degrees' , value : rawAngle - 360 } ;
+  }
+}
 
 export const AngleZero = () : Angle => {
   return { type : 'degrees' , value : 0 } ;

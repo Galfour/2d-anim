@@ -1,4 +1,4 @@
-import { AngleToDegrees, type Angle } from "./angle";
+import { AngleAdd, AngleSubShortest, AngleToDegrees, type Angle } from "./angle";
 import type { Position, SkeletonAnimationFrameData } from "./skeleton";
 
 export const lerp = (a : number , b : number , t : number) => {
@@ -12,7 +12,7 @@ export const lerpPosition = (a : Position , b : Position , t : number) : Positio
   } ;
 } ;
 
-export const lerpAngle = (a : Angle , b : Angle , t : number) : Angle => {
+export const lerpAngleRaw = (a : Angle , b : Angle , t : number) : Angle => {
   if (a.type === 'radians' && b.type === 'radians') {
     return {
       type : 'radians' ,
@@ -23,6 +23,12 @@ export const lerpAngle = (a : Angle , b : Angle , t : number) : Angle => {
     type : 'degrees' ,
     value : lerp(AngleToDegrees(a) , AngleToDegrees(b) , t) ,
   } ;
+} ;
+
+export const lerpAngle = (a : Angle , b : Angle , t : number) : Angle => {
+  const diff = AngleSubShortest(b , a) ;
+  const targetB = AngleAdd(a , diff) ;
+  return lerpAngleRaw(a , targetB , t) ;
 } ;
 
 export const lerpAnimationFrame = (a : SkeletonAnimationFrameData , b : SkeletonAnimationFrameData , t : number) : SkeletonAnimationFrameData => {

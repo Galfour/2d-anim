@@ -1,7 +1,7 @@
 <script lang=ts>
   import { writable, type Writable } from "svelte/store";
 
-  import { type Joint , JointProperties, Skeleton , SkeletonAnimationFrameData, type Guide, SkeletonControl, applySkeletonControlState, Root, JoinConstructor, type RootControl, type JointControl, type SkeletonAnimation, runSkeletonAnimation, applyJointControl, applyRootControl } from "$lib/skeleton" ;
+  import { type Joint , JointProperties, Skeleton , SkeletonAnimationFrameData, type Guide, SkeletonControl, applySkeletonControl, Root, JoinConstructor, type RootControl, type JointControl, type SkeletonAnimation, runSkeletonAnimation, applyJointControl, applyRootControl } from "$lib/skeleton" ;
   import DebugJointSvg from "./DebugJointSvg.svelte";
   import ShowJointSvg from "./ShowJointSvg.svelte";
   // import ShowJointCss from "./ShowJointCss.svelte" ;
@@ -54,7 +54,7 @@
     for (const [name , joint] of Object.entries(x.joints)) {
       const store = writable<JointProperties>(joint) ;
       store.subscribe((newState) => {
-        applySkeletonControlState(x , { joints : { [name] : newState } }) ;
+        applySkeletonControl(x , { joints : { [name] : newState } }) ;
       }) ;
       storeMap[name] = store ;
     }
@@ -123,7 +123,8 @@
   const playAnimation = async () => {
     if (!animation) return ;
     runSkeletonAnimation(animation , (rootControl) => {
-      applyRootControl(skeleton.root , rootControl) ;
+      applyRootControl(skeleton , rootControl) ;
+      console.log('rootControl' , rootControl.position?.y) ;
     } , (name , jointControl) => {
       // console.log('jointControl' , name , jointControl) ;
       applyJointControl(skeleton , name , jointControl) ;
@@ -153,16 +154,36 @@
   </g>
 </svg>
 
-<div style="display : flex; flex-direction : row; gap : 20px ; flex-wrap : wrap">
-  {#each Object.entries(skeleton.joints) as [jointName , joint]}
+<div>
+  <h2>Joints</h2>
+  <div style="display : flex; flex-direction : row; gap : 20px ; flex-wrap : wrap">
+    {#each Object.entries(skeleton.joints) as [jointName , joint]}
+      <div>
+        <div>{joint.name}</div>
+        <input type="range" bind:value={
+          () => AngleToDegrees(joint.angle) , 
+          (x) => applySkeletonControl(skeleton , { joints : { [jointName] : { angle : deg(x) } } })
+        } min="-180" max="180" step="0.1"/>
+      </div>
+    {/each}
+  </div>
+  <h2>Root</h2>
+  <div style="display : flex; flex-direction : row; gap : 20px ; flex-wrap : wrap">
     <div>
-      <div>{joint.name}</div>
+      <div>X</div>
       <input type="range" bind:value={
-        () => AngleToDegrees(joint.angle) , 
-        (x) => applySkeletonControlState(skeleton , { joints : { [jointName] : { angle : deg(x) } } })
-      } min="-180" max="180" step="0.1"/>
+        () => skeleton.root.position.x , 
+        (x) => applySkeletonControl(skeleton , { root : { position : { x , y : skeleton.root.position.y } } })
+      } min="-10" max="10" step="0.1"/>
     </div>
-  {/each}
+    <div>
+      <div>Y</div>
+      <input type="range" bind:value={
+        () => skeleton.root.position.y , 
+        (y) => applySkeletonControl(skeleton , { root : { position : { x : skeleton.root.position.x , y } } })
+      } min="-10" max="10" step="0.1"/>
+    </div>
+  </div>
 </div>
 
 <div style="display : flex; flex-direction : column; gap : 10px ; flex-wrap : wrap ; width : max-content">
@@ -174,7 +195,7 @@
         <button onclick={async () => {
           const frame = await getAnimationFrame(frameName) ;
           if (frame) {
-            applySkeletonControlState(skeleton , frame.control) ;
+            applySkeletonControl(skeleton , frame.control) ;
           }
         }}>Load</button>  
         <button onclick={async () => {
@@ -186,7 +207,12 @@
   </div>
   <br>
   <button onclick={() => {
-    const rootControl : RootControl = {} ;
+    const rootControl : RootControl = {
+      position : {
+        x : skeleton.root.position.x ,
+        y : skeleton.root.position.y ,
+      } ,
+    } ;
     const jointControls : Record<string , JointControl> = {} ;
     for (const [name , joint] of Object.entries(skeleton.joints)) {
       jointControls[name] = { angle : joint.angle } ;
