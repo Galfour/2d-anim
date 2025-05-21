@@ -163,12 +163,6 @@ export const Skeleton = (root : Root , jointConstructors : Array< JoinConstructo
         ) ,
       } ;
     }
-    if (jointName === 'head') {
-      console.log('head' ,
-        space.origin , space.angle , constructor.anchor ,
-        PositionRotate(constructor.anchor , { x : 0 , y : 0 } , space.angle) ,
-      ) ;
-    }
     const anchor = PositionAdd(
       space.origin ,
       PositionRotate(constructor.anchor , { x : 0 , y : 0 } , space.angle) ,

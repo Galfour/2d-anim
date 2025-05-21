@@ -86,11 +86,13 @@
   let animationEndName : string | undefined = $state(undefined) ;
   let animationFrameQuantity : number = $state(120) ;
   let animationFrameRate : number = $state(60) ;
+  let animationBetweenFrameNames : Array<{ name : string , timeRatio : number }> = $state([]) ;
 
   let animation : SkeletonAnimation | undefined = $state(undefined) ;
   $effect(() => {
     animationStartName ;
     animationEndName ;
+    animationBetweenFrameNames ;
     animationFrameQuantity ;
     animationFrameRate ;
     untrack(async () => {
@@ -104,18 +106,49 @@
     if (!animationStartName || !animationEndName) return ;
     const animationStart = await getAnimationFrame(animationStartName) ;
     const animationEnd = await getAnimationFrame(animationEndName) ;
+    const animationBetweenFrames = await Promise.all(animationBetweenFrameNames.map(async (x) => ({...x , frame : await getAnimationFrame(x.name)}))) ;
+    const animationBetweenFramesReverse = animationBetweenFrames.slice().reverse() ;
     if (!animationStart || !animationEnd) return ;
+    if (animationBetweenFrames.some(x => !x.frame)) return ;
 
     const skeletonAnimation : SkeletonAnimation = {
       frameData : [] ,
       frameRate : animationFrameRate ,
     }
 
+    let debug : any = [] ;
+
     for (let i = 0; i < animationFrameQuantity; i++) {
-      const t = i / animationFrameQuantity ;
-      const lerped = lerpAnimationFrame(animationStart, animationEnd, t);
+      const currentTimeRatio = i / animationFrameQuantity ;
+      let lastTimeRatio = 0 ;
+      let lastAnimationFrame = animationStart ;
+      let lastAnimationFrameName = animationStartName ;
+      for (const betweenFrame of animationBetweenFrames) {
+        if (betweenFrame.timeRatio < currentTimeRatio) {
+          lastTimeRatio = betweenFrame.timeRatio ;
+          lastAnimationFrame = betweenFrame.frame! ;
+          lastAnimationFrameName = betweenFrame.name ;
+        }
+      }
+      let nextTimeRatio = 1 ;
+      let nextAnimationFrame = animationEnd ;
+      let nextAnimationFrameName = animationEndName ;
+      for (const betweenFrame of animationBetweenFramesReverse) {
+        if (betweenFrame.timeRatio >= currentTimeRatio) {
+          nextTimeRatio = betweenFrame.timeRatio ;
+          nextAnimationFrame = betweenFrame.frame! ;
+          nextAnimationFrameName = betweenFrame.name ;
+        }
+      }
+      const t = (currentTimeRatio - lastTimeRatio) / (nextTimeRatio - lastTimeRatio) ;
+      if (!(t > 0 && t < 1)) {
+        console.log('absolute t' , currentTimeRatio , 'relative t' , t) ;
+      }
+      const lerped = lerpAnimationFrame(lastAnimationFrame, nextAnimationFrame, t);
       skeletonAnimation.frameData.push(lerped) ;
+      debug.push({ lastFrame : lastAnimationFrameName , nextFrame : nextAnimationFrameName , t , currentTimeRatio , lastTimeRatio , nextTimeRatio }) ;
     }
+    console.log('debug' , debug) ;
 
     return skeletonAnimation ;
   } ;
@@ -124,7 +157,7 @@
     if (!animation) return ;
     runSkeletonAnimation(animation , (rootControl) => {
       applyRootControl(skeleton , rootControl) ;
-      console.log('rootControl' , rootControl.position?.y) ;
+      // console.log('rootControl' , rootControl.position?.y) ;
     } , (name , jointControl) => {
       // console.log('jointControl' , name , jointControl) ;
       applyJointControl(skeleton , name , jointControl) ;
@@ -231,10 +264,18 @@
   }}>Save</button>
 </div>
 
-<div>
-  <h2>Animation</h2>
-  <div style="display : flex; flex-direction : row; gap : 10px ; flex-wrap : wrap ; width : max-content">
-    <div>
+<div style="display : flex; flex-direction : column; gap : 1em ; flex-wrap : wrap ; width : max-content">
+  <h2 style="margin : 0">Animation</h2>
+  <div style="width : 100px ; display : flex ; width : 100% ; gap : 1em ;">
+    <div>Frame Rate</div>
+    <select bind:value={animationFrameRate}>
+      {#each [12 , 25 , 30 , 60 , 120 , 240] as rate}
+        <option value={rate}>{rate}</option>
+      {/each}
+    </select>
+  </div>
+  <div style="display : flex; flex-direction : column; gap : 1em ; flex-wrap : wrap ; width : max-content">
+    <div style="display : flex; flex-direction : row; gap : 1em ; flex-wrap : wrap ; width : max-content">
       <div>Start Frame</div>
       <select bind:value={animationStartName}>
         {#each allAnimationFrames as frameName}
@@ -243,6 +284,31 @@
       </select>
     </div>
     <div>
+      <div>Between Frames</div>
+      <div>
+        {#each animationBetweenFrameNames as betweenFrame , index }
+          <div style="display : flex; flex-direction : row; gap : 1em ; flex-wrap : wrap ; width : max-content">
+            <div>Frame #{index + 1}</div>
+            <select bind:value={betweenFrame.name}>
+              {#each allAnimationFrames as frameName}
+                <option value={frameName}>{frameName}</option>
+              {/each}
+            </select>
+            <div>Time Ratio</div>
+            <input type="number" bind:value={betweenFrame.timeRatio} min="0" max="1" step="0.01" />
+            <button onclick={() => {
+              animationBetweenFrameNames.splice(index , 1) ;
+            }}>Remove</button>
+          </div>
+        {/each}
+      </div>
+      <div>
+        <button onclick={() => {
+          animationBetweenFrameNames.push({ name : 'frame' , timeRatio : 0.5 }) ;
+        }}>Add Between Frame</button>
+      </div>  
+    </div>
+    <div style="display : flex; flex-direction : row; gap : 1em ; flex-wrap : wrap ; width : max-content">
       <div>End Frame</div>
       <select bind:value={animationEndName}>
         {#each allAnimationFrames as frameName}
@@ -250,15 +316,7 @@
         {/each}
       </select>
     </div>
-    <div style="width : 100px">
-      <div>Frame Rate</div>
-      <select bind:value={animationFrameRate}>
-        {#each [12 , 25 , 30 , 60 , 120 , 240] as rate}
-          <option value={rate}>{rate}</option>
-        {/each}
-      </select>
-    </div>
-    <div>
+    <div style="display : flex; flex-direction : row; gap : 1em ; flex-wrap : wrap ; width : max-content">
       <div>Frame Quantity</div>
       <input type="number" bind:value={animationFrameQuantity} style="width : 50px"/>
     </div>

@@ -46,8 +46,10 @@
   - [X] save root in poses
   - [X] debug
   - [X] angle procedural animation by shortest angle
-  - multiple frames
+  - [X] multiple frames
   - curves
+    - [X] linear
+- [] refactor +page.svelte
 - [] save animation
 - [ ] support colours
 - [ ] support items
