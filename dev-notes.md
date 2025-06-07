@@ -49,7 +49,13 @@
   - [X] multiple frames
   - curves
     - [X] linear
+    - [] ease
+    - [] overshoot
+- [] fix bug
+  - [] more than 2 poses in the animation
 - [] refactor +page.svelte
+  - [] order things alphabetically
+  - [] some nice looking thing
 - [] save animation
 - [ ] support colours
 - [ ] support items
